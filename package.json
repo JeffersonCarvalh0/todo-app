@@ -4,9 +4,28 @@
   "author": "Jefferon Carvalho",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "lint": "yarn workspace run lint",
+    "lint:web": "yarn workspace web lint"
+  },
   "workspaces": {
     "packages": [
       "packages/*"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "lint",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "lint-staged": "^10.1.7"
   }
 }
