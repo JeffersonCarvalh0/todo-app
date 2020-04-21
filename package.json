@@ -5,8 +5,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "yarn workspace run lint",
-    "lint:web": "yarn workspace web lint"
+    "lint": "yarn workspaces run lint",
+    "test": "yarn workspaces run test",
+    "lint:web": "yarn workspace web lint",
+    "test:web": "yarn workspace web test"
   },
   "workspaces": {
     "packages": [
@@ -15,7 +17,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "yarn test && lint-staged"
     }
   },
   "lint-staged": {
