@@ -1,11 +1,11 @@
 # Todo app
 
-A monorepo with front and backend of a todo app.
+A todo app monorepo with web, server and mobile apps.
 
 ## Stack
-### Web
+### Web/Mobile
  - Typescript
- - React(with hooks)
+ - React/React Native(with hooks)
  - Storybook
  - Styled components
  - Jest/React testing library
