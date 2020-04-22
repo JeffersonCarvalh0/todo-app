@@ -7,8 +7,10 @@
   "scripts": {
     "lint": "yarn workspaces run lint",
     "test": "yarn workspaces run test",
+    "start": "yarn workspaces run start",
     "lint:web": "yarn workspace web lint",
-    "test:web": "yarn workspace web test"
+    "test:web": "yarn workspace web test",
+    "start:web": "yarn workspace web start"
   },
   "workspaces": {
     "packages": [
