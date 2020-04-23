@@ -7,12 +7,15 @@
   "scripts": {
     "lint": "yarn workspaces run lint",
     "test": "yarn workspaces run test",
-    "start": "yarn workspaces run start",
     "lint:web": "yarn workspace web lint",
     "test:web": "yarn workspace web test",
-    "start:web": "yarn workspace web start"
+    "start:web": "yarn workspace web start",
+    "test:mobile": "yarn workspace mobile test",
+    "start:mobile": "yarn workspace mobile start",
+    "android": "yarn workspace mobile android"
   },
   "workspaces": {
+    "nohoist": ["**/react-native", "**/react-native/**"],
     "packages": [
       "packages/*"
     ]
