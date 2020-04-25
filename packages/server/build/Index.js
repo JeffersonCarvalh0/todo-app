@@ -27,7 +27,10 @@ router.get('/', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.body = { message: 'This is your GET route' };
 }));
 router.post('/data', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    ctx.body = { message: 'This is your POST route, attached you can find the data you sent', body: ctx.request.body };
+    ctx.body = {
+        message: 'This is your POST route, attached you can find the data you sent',
+        body: ctx.request.body,
+    };
 }));
-app.listen(PORT, () => console.log('Server started.'));
+app.listen(PORT, () => console.log(`Server started and running at localhost:${PORT}`));
 //# sourceMappingURL=Index.js.map

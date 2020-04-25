@@ -11,13 +11,9 @@
     "test:web": "yarn workspace web test",
     "start:web": "yarn workspace web start",
     "test:server": "yarn workspace server test",
-    "start:server": "yarn workspace server start"
+    "start:server": "yarn workspace server nodemon"
   },
   "workspaces": {
-    "nohoist": [
-      "**/react-native",
-      "**/react-native/**"
-    ],
     "packages": [
       "packages/*"
     ]
@@ -29,8 +25,7 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-      "lint",
-      "git add"
+      "lint"
     ]
   },
   "devDependencies": {

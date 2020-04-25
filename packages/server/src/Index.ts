@@ -28,4 +28,6 @@ router.post('/data', async (ctx: Koa.Context) => {
   };
 });
 
-app.listen(PORT, () => console.log('Server started.'));
+app.listen(PORT, () =>
+  console.log(`Server started and running at localhost:${PORT}`),
+);
