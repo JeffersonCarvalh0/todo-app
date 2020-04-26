@@ -8,23 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const Koa = require("koa");
-const Router = require("koa-router");
-const logger = require("koa-logger");
-const json = require("koa-json");
-const bodyParser = require("koa-bodyparser");
-const app = new Koa();
-const router = new Router();
-const PORT = 3000;
+const koa_1 = __importDefault(require("koa"));
+const koa_router_1 = __importDefault(require("koa-router"));
+const koa_logger_1 = __importDefault(require("koa-logger"));
+const koa_json_1 = __importDefault(require("koa-json"));
+const koa_bodyparser_1 = __importDefault(require("koa-bodyparser"));
+const app = new koa_1.default();
+const router = new koa_router_1.default();
 /** Middlewares */
-app.use(json());
-app.use(logger());
-app.use(bodyParser());
+app.use(koa_json_1.default());
+app.use(koa_logger_1.default());
+app.use(koa_bodyparser_1.default());
 /** Routes */
 app.use(router.routes()).use(router.allowedMethods());
 router.get('/', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    ctx.body = { message: 'This is your GET route' };
+    ctx.body = { message: 'Hello World' };
 }));
 router.post('/data', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.body = {
@@ -32,5 +34,5 @@ router.post('/data', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         body: ctx.request.body,
     };
 }));
-app.listen(PORT, () => console.log(`Server started and running at localhost:${PORT}`));
-//# sourceMappingURL=Index.js.map
+exports.default = app;
+//# sourceMappingURL=app.js.map

@@ -4,14 +4,17 @@
     "lib": [ "es5", "es6" ],
     "module": "commonjs",
     "target": "es6",
-    "lib": ["dom"],
-    "sourceMap": true
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true
   },
   "include": [
-    "src"
+    "src/*.ts"
   ],
   "exclude": [
     "node_modules",
-    "../../node_modules"
+    "../../node_modules",
+    "node_modules/*",
+    "src/test/**/*.test.ts"
   ]
 }

@@ -1,13 +1,12 @@
-import * as Koa from 'koa';
-import * as Router from 'koa-router';
+import Koa from 'koa';
+import Router from 'koa-router';
 
-import * as logger from 'koa-logger';
-import * as json from 'koa-json';
-import * as bodyParser from 'koa-bodyparser';
+import logger from 'koa-logger';
+import json from 'koa-json';
+import bodyParser from 'koa-bodyparser';
 
 const app = new Koa();
 const router = new Router();
-const PORT = 3000;
 
 /** Middlewares */
 app.use(json());
@@ -18,7 +17,7 @@ app.use(bodyParser());
 app.use(router.routes()).use(router.allowedMethods());
 
 router.get('/', async (ctx: Koa.Context) => {
-  ctx.body = { message: 'This is your GET route' };
+  ctx.body = { message: 'Hello World' };
 });
 
 router.post('/data', async (ctx: Koa.Context) => {
@@ -28,6 +27,4 @@ router.post('/data', async (ctx: Koa.Context) => {
   };
 });
 
-app.listen(PORT, () =>
-  console.log(`Server started and running at localhost:${PORT}`),
-);
+export default app;
