@@ -3,10 +3,13 @@
     "outDir": "./build",
     "lib": [ "es5", "es6" ],
     "module": "commonjs",
-    "target": "es6",
+    "target": "es2017",
+    "lib": ["es6"],
     "sourceMap": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "include": [
     "src/*.ts"

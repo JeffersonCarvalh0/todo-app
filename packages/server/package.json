@@ -9,9 +9,9 @@
     "node": "12.0.0"
   },
   "scripts": {
-    "start": "tsc && node ./build/server.js",
-    "start:dev": "nodemon",
+    "start": "nodemon",
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --fix",
+    "migrate": "ts-node ../../node_modules/typeorm/cli.js migration:generate -d src/migrations",
     "test": "jest"
   },
   "dependencies": {
@@ -19,7 +19,10 @@
     "koa-bodyparser": "^4.3.0",
     "koa-json": "^2.0.2",
     "koa-logger": "^3.2.1",
-    "koa-router": "^8.0.8"
+    "koa-router": "^8.0.8",
+    "mysql": "^2.18.1",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.24"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",

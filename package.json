@@ -14,7 +14,8 @@
     "test:web": "yarn workspace web test",
     "start:web": "yarn workspace web start",
     "test:server": "yarn workspace server test",
-    "start:server": "yarn workspace server nodemon"
+    "start:server": "yarn workspace server nodemon",
+    "migrate": "yarn workspace server migrate"
   },
   "workspaces": {
     "packages": [
