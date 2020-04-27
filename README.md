@@ -1,11 +1,11 @@
 # Todo app
 
-A todo app monorepo with web, server and mobile apps.
+A todo app monorepo with web and server.
 
 ## Stack
-### Web/Mobile
+### Web
  - Typescript
- - React/React Native(with hooks)
+ - React(with hooks)
  - Storybook
  - Styled components
  - Jest/React testing library
@@ -20,6 +20,7 @@ A todo app monorepo with web, server and mobile apps.
 The monorepo is managed with Yarn Workspaces.
 
 ## Instructions
+Make sure you are using node at version 12.0.0.
 Run `yarn` in the root to install all dependencies. After this, you can
 
  - `yarn test` to run all tests
