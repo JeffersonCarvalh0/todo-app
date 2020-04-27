@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "nodemon",
-    "start:prod": "tsc && yarn migration:run && node ./build/server.js",
+    "build:prod": "tsc",
+    "start:prod": "yarn migration:run && node ./build/server.js",
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --fix",
     "migration:generate": "ts-node ../../node_modules/typeorm/cli.js migration:generate -d src/migrations",
     "migration:run": "ts-node ../../node_modules/typeorm/cli.js migration:run",
