@@ -15,6 +15,7 @@
     "start:web": "yarn workspace web start",
     "test:server": "yarn workspace server test",
     "start:server": "yarn workspace server nodemon",
+    "heroku-postbuild": "yarn workspace server start:prod",
     "migration:generate": "yarn workspace server migration:generate",
     "migration:run": "yarn workspace server migration:run"
   },
