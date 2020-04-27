@@ -1,0 +1,21 @@
+name: Development(Web)
+
+on: 
+  push:
+    branches-ignore:
+      - master
+    paths:
+      - 'packages/web/**'
+      
+jobs:
+  build:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          - node-version: '12.0.0'
+      - run: yarn install
+      - run: yarn workspace web lint
+      - run: yarn workspace web test
