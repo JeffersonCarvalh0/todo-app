@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 import GlobalStyle from './globalStyle';
-import { getWelcomeString } from 'components/src/main';
 
 const Container = styled.div`
   text-align: center;
@@ -29,7 +28,6 @@ function App() {
       <GlobalStyle />
       <Container>
         <Header>
-          <p>{getWelcomeString('World')}</p>
           <p>
             Edit <code>src/App.tsx</code> and save to reload.
           </p>

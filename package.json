@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "author": "Jefferon Carvalho",
   "license": "MIT",
+  "engines": {
+    "node": "12.0.0"
+  },
   "private": true,
   "scripts": {
     "lint": "yarn workspaces run lint",
@@ -10,12 +13,12 @@
     "lint:web": "yarn workspace web lint",
     "test:web": "yarn workspace web test",
     "start:web": "yarn workspace web start",
-    "test:mobile": "yarn workspace mobile test",
-    "start:mobile": "yarn workspace mobile start",
-    "android": "yarn workspace mobile android"
+    "test:server": "yarn workspace server test",
+    "start:server": "yarn workspace server nodemon",
+    "migration:generate": "yarn workspace server migration:generate",
+    "migration:run": "yarn workspace server migration:run"
   },
   "workspaces": {
-    "nohoist": ["**/react-native", "**/react-native/**"],
     "packages": [
       "packages/*"
     ]
@@ -27,8 +30,7 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-      "lint",
-      "git add"
+      "lint"
     ]
   },
   "devDependencies": {
