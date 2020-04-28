@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'packages/server/**'
+      - '.github/workflows/server-release.yml'
     branches:
       - master
 

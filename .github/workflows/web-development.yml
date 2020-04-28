@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'packages/web/**'
+      - '.github/workflows/web-development.yml'
     branches-ignore:
       - master
       
