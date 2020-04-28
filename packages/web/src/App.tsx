@@ -28,6 +28,7 @@ function App() {
       <GlobalStyle />
       <Container>
         <Header>
+          <p>Automatically deployed with github actions!!!</p>
           <p>
             Edit <code>src/App.tsx</code> and save to reload.
           </p>

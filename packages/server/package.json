@@ -10,9 +10,11 @@
   },
   "scripts": {
     "start": "nodemon",
+    "build:prod": "tsc",
+    "start:prod": "yarn migration:run && node ./build/server.js",
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --fix",
     "migration:generate": "ts-node ../../node_modules/typeorm/cli.js migration:generate -d src/migrations",
-    "migration:run": "ts-node ../../node_modules/typeorm/cli.js migration:run",
+    "migration:run": "yarn ts-node ../../node_modules/typeorm/cli.js migration:run",
     "test": "jest"
   },
   "dependencies": {
@@ -21,9 +23,10 @@
     "koa-json": "^2.0.2",
     "koa-logger": "^3.2.1",
     "koa-router": "^8.0.8",
-    "mysql": "^2.18.1",
+    "pg": "^8.0.3",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.24"
+    "typeorm": "^0.2.24",
+    "ts-node": "^8.9.0"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",
@@ -44,7 +47,6 @@
     "prettier": "^2.0.5",
     "supertest": "^4.0.2",
     "ts-jest": "^25.4.0",
-    "ts-node": "^8.9.0",
     "typescript": "^3.8.3"
   }
 }

@@ -20,6 +20,5 @@ The database can be updated by `yarn migration:generate` to generate a migration
 file, and then `yarn migration:run` to apply it. `yarn migration:run` is also run
 automatically when the server is started.
 
-
 ### Tests
 `yarn test` or `yarn test:server` if you are in root.

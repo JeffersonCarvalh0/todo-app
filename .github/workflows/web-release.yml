@@ -1,0 +1,33 @@
+name: Release(Web)
+
+on:
+  push:
+    paths:
+      - 'packages/web/**'
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v1
+        with:
+          ref: master
+          
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.0.0'
+      - run: yarn install
+      - run: yarn lint:web
+      - run: yarn test:web
+      - run: yarn build:web
+
+      - name: Deploy 
+        if: success()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./build

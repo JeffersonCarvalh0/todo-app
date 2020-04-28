@@ -1,0 +1,33 @@
+name: Release(Server)
+
+on:
+  push:
+    paths:
+      - 'packages/server/**'
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v1
+        with:
+          ref: master
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.0.0'
+      - run: yarn install
+      - run: yarn lint:server
+      - run: yarn test:server
+
+      - name: Deploy
+        if: success()
+        uses: akhileshns/heroku-deploy@v3.0.4
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_API_NAME }}
+          heroku_email: "jeffersonhcarvalho@gmail.com"

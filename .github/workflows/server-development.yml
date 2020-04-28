@@ -1,0 +1,21 @@
+name: Development(Server)
+
+on: 
+  push:
+    paths:
+      - 'packages/server/**'
+    branches-ignore:
+      - master
+      
+jobs:
+  build:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.0.0'
+      - run: yarn install
+      - run: yarn lint:server
+      - run: yarn test:server

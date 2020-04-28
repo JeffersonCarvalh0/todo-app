@@ -17,7 +17,7 @@ app.use(bodyParser());
 app.use(router.routes()).use(router.allowedMethods());
 
 router.get('/', async (ctx: Koa.Context) => {
-  ctx.body = { message: 'Hello World' };
+  ctx.body = { message: 'Automatically deployed with github actions!!!' };
 });
 
 router.post('/data', async (ctx: Koa.Context) => {
