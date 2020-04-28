@@ -1,30 +1,40 @@
-import Koa from 'koa';
+import Koa, { DefaultState, Context } from 'koa';
 import Router from 'koa-router';
 
 import logger from 'koa-logger';
 import json from 'koa-json';
 import bodyParser from 'koa-bodyparser';
 
-const app = new Koa();
-const router = new Router();
+import { Connection } from 'typeorm';
 
-/** Middlewares */
-app.use(json());
-app.use(logger());
-app.use(bodyParser());
+const runApp = (typeormConnection?: Connection, port?: string | number) => {
+  const app = new Koa();
 
-/** Routes */
-app.use(router.routes()).use(router.allowedMethods());
+  // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/36161#issuecomment-571295417
+  const router = new Router<DefaultState, Context>();
 
-router.get('/', async (ctx: Koa.Context) => {
-  ctx.body = { message: 'Automatically deployed with github actions!!!' };
-});
+  /** Middlewares */
+  app.use(json());
+  app.use(logger());
+  app.use(bodyParser());
 
-router.post('/data', async (ctx: Koa.Context) => {
-  ctx.body = {
-    message: 'This is your POST route, attached you can find the data you sent',
-    body: ctx.request.body,
-  };
-});
+  /** Routes */
+  app.use(router.routes()).use(router.allowedMethods());
 
-export default app;
+  router.get('/', async (ctx: Koa.Context) => {
+    ctx.body = { message: 'Automatically deployed with github actions!!!' };
+  });
+
+  router.post('/data', async (ctx: Koa.Context) => {
+    ctx.body = {
+      message:
+        'This is your POST route, attached you can find the data you sent',
+      body: ctx.request.body,
+    };
+  });
+
+  if (port) app.listen(port);
+  return app.callback();
+};
+
+export default runApp;
