@@ -29,7 +29,7 @@ function App() {
       <Container>
         <Header>
           <p>
-            Edit <code>src/App.tsx</code> and save to reload.
+            Edit <code>src/App.tsx</code> and save to reload!
           </p>
           <AppLink
             href="https://reactjs.org"
