@@ -2,10 +2,10 @@ name: Development(Server)
 
 on: 
   push:
-    branches-ignore:
-      - master
     paths:
       - 'packages/server/**'
+    branches-ignore:
+      - master
       
 jobs:
   build:

@@ -2,10 +2,10 @@ name: Development(Web)
 
 on: 
   push:
-    branches-ignore:
-      - master
     paths:
       - 'packages/web/**'
+    branches-ignore:
+      - master
       
 jobs:
   build:
