@@ -1,3 +1,5 @@
+![Release(Web)](https://github.com/JeffersonCarvalh0/todo-app/workflows/Release(Web)/badge.svg)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
