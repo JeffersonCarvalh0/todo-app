@@ -14,6 +14,7 @@
     "test:web": "yarn workspace web test",
     "start:web": "yarn workspace web start",
     "build:web": "yarn workspace web build",
+    "lint:server": "yarn workspace server lint",
     "test:server": "yarn workspace server test",
     "start:server": "yarn workspace server nodemon",
     "heroku-postbuild": "yarn workspace server build:prod",
