@@ -14,6 +14,7 @@ module.exports = {
     "@typescript-eslint/explicit-function-return-type": "off",
   },
   ignorePatterns: [
-    "build"
+    "build",
+    "migrations"
   ]
 };
