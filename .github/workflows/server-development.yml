@@ -17,5 +17,5 @@ jobs:
         with:
           node-version: '12.0.0'
       - run: yarn install
-      - run: yarn workspace server lint
-      - run: yarn workspace server test
+      - run: yarn lint:server
+      - run: yarn test:server
