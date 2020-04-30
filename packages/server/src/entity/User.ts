@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, getRepository } from 'typeorm';
 import { IsEmail, IsNotEmpty } from 'class-validator';
+import bcrypt from 'bcrypt';
 
 interface UserType {
   name?: string;
@@ -21,11 +22,11 @@ export default class User {
   @IsEmail()
   email: string;
 
-  @Column()
+  @Column({ select: false })
   @IsNotEmpty()
   password: string;
 
-  constructor({ name, email, password }: UserType) {
+  constructor({ name, email, password }: UserType = {}) {
     this.name = name;
     this.email = email;
     this.password = password;
@@ -37,6 +38,15 @@ export default class User {
       email: this.email,
     };
   };
-}
 
-export const UserRepository = getRepository(User);
+  checkPassword = async (otherPassword: string) => {
+    try {
+      await bcrypt.compare(otherPassword, this.password);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+}
+// https://github.com/typeorm/typeorm/issues/4010#issuecomment-612149115
+export const getUserRepository = () => getRepository(User);
