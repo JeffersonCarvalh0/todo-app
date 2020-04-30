@@ -4,16 +4,16 @@ import Router from 'koa-router';
 import logger from 'koa-logger';
 import json from 'koa-json';
 import bodyParser from 'koa-bodyparser';
+import helmet from 'koa-helmet';
 
-import { Connection } from 'typeorm';
-
-const runApp = (typeormConnection?: Connection, port?: string | number) => {
+const runApp = (port?: string | number) => {
   const app = new Koa();
 
   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/36161#issuecomment-571295417
   const router = new Router<DefaultState, Context>();
 
   /** Middlewares */
+  app.use(helmet());
   app.use(json());
   app.use(logger());
   app.use(bodyParser());
