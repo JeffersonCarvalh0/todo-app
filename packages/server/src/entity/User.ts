@@ -1,5 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, getRepository } from 'typeorm';
-import { IsEmail, NotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
+
+interface UserType {
+  name?: string;
+  email?: string;
+  password?: string;
+}
 
 @Entity()
 export default class User {
@@ -9,39 +15,30 @@ export default class User {
   @Column({
     length: 100,
   })
-  @NotEmpty()
+  @IsNotEmpty()
   name: string;
 
   @Column()
-  @NotEmpty()
+  @IsNotEmpty()
   @IsEmail()
   email: string;
 
   @Column()
-  @NotEmpty()
+  @IsNotEmpty()
   password: string;
 
-  constructor({ name?: string, email?: string, password?: string }) {
+  constructor({ name, email, password }: UserType) {
     this.name = name;
     this.email = email;
     this.password = password;
   }
 
-  const toJson = () => {
+  toJson = () => {
     return {
       name: this.name,
       email: this.email,
     };
-  }
-
-  const copyWith = ({name?: string, email?: string, password?: string }) => {
-    return new User({
-      id: this.id,
-      name: name || this.name,
-      email: email || this.email,
-      password: password || this.password
-    });
-  } 
+  };
 }
 
 export const UserRepository = getRepository(User);
