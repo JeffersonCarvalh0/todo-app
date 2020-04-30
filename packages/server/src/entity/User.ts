@@ -12,13 +12,11 @@ export default class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
-    length: 100,
-  })
+  @Column({ length: 100 })
   @IsNotEmpty()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   @IsNotEmpty()
   @IsEmail()
   email: string;

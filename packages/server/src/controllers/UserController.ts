@@ -1,6 +1,7 @@
 import { Context } from 'koa';
 import { validate } from 'class-validator';
 import passport from 'koa-passport';
+import jwt from 'jsonwebtoken';
 
 import User, { UserRepository } from '../entity/User';
 import { hashPassword } from '../auth';
@@ -26,6 +27,25 @@ export default class UserController {
       message: foundErrors ? 'Error during data validation' : '',
       errors: errors,
     };
+  };
+
+  static login = async (context: Context) => {
+    passport.authenticate(
+      'local',
+      { session: false },
+      (err: Error, user: User, info) => {
+        const token = user
+          ? jwt.sign(user.toJson(), process.env.JWTSECRET, { expiresIn: '15m' })
+          : null;
+
+        context.response.status = err ? 401 : 200;
+        context.body = {
+          data: { token },
+          message: info.message,
+          error: [err],
+        };
+      },
+    );
   };
 
   static getUserInfo = async (context: Context) => {
