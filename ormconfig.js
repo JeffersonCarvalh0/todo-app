@@ -15,14 +15,17 @@ module.exports = {
     "src/entity/*.js"
   ],
   "subscribers": [
-    "src/subscriber/*.js"
+    "src/subscriber/*.ts"
   ],
   "migrations": [
-    "src/migration/*.js"
+    "src/migrations/*.ts"
+  ],
+  "entities": [
+    "src/entity/*.ts"
   ],
   "cli": {
     "entitiesDir": "src/entity",
-    "migrationsDir": "src/migration",
+    "migrationsDir": "src/migrations",
     "subscribersDir": "src/subscriber"
   }
 }

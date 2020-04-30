@@ -1,6 +1,6 @@
 {
   "ignore": ["**/*.test.ts", "**/*.spec.ts", "node_modules"],
   "watch": ["src"],
-  "exec": "tsc && yarn migration:run && node ./build/server.js",
+  "exec": "tsc && yarn migration:run && ts-node ./src/server.ts",
   "ext": "ts"
 }
