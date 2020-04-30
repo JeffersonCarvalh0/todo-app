@@ -2,29 +2,43 @@ import { Context } from 'koa';
 import { validate } from 'class-validator';
 import passport from 'koa-passport';
 import jwt from 'jsonwebtoken';
+import eres from 'eres';
 
-import User, { UserRepository } from '../entity/User';
+import User, { getUserRepository } from '../entity/User';
 import { hashPassword } from '../auth';
 
 export default class UserController {
   static createNewUser = async (context: Context) => {
     const body = context.request.body;
+
     const newUser = new User({
       name: body.name,
       email: body.email,
-      password: await hashPassword(body.password),
+      password: body.password ? await hashPassword(body.password) : '',
     });
-    const errors = await validate(newUser);
-    const foundErrors = errors.length > 0;
 
-    context.response.status = foundErrors ? 201 : 400;
-    if (!foundErrors) {
-      await UserRepository.save(newUser);
-    }
+    const validationErrors = await validate(newUser);
+    const isNotValid = validationErrors.length > 0;
+    const [saveError] = await eres(getUserRepository().save(newUser));
+
+    context.response.status = isNotValid || saveError ? 400 : 201;
+
+    const message = isNotValid
+      ? 'Error during data validation'
+      : saveError
+      ? 'Error while saving data'
+      : '';
+
+    const errors =
+      isNotValid && saveError
+        ? [...validationErrors, saveError]
+        : isNotValid || saveError
+        ? [saveError] || validationErrors
+        : [];
 
     context.body = {
-      data: foundErrors ? {} : newUser.toJson(),
-      message: foundErrors ? 'Error during data validation' : '',
+      data: isNotValid || saveError ? {} : newUser.toJson(),
+      message: message,
       errors: errors,
     };
   };
@@ -88,7 +102,7 @@ export default class UserController {
         context.body = {
           data: foundErrors ? {} : user.toJson(),
           message: message,
-          errors: err ? [err] : [errors],
+          errors: err ? [err] : errors,
         };
       },
     );
@@ -100,7 +114,7 @@ export default class UserController {
       { session: false },
       async (err: Error, user: User, info) => {
         context.reponse.status = user ? 204 : 401;
-        await UserRepository.remove(user);
+        await getUserRepository().remove(user);
 
         context.body = {
           data: {},
