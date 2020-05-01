@@ -1,4 +1,4 @@
-import { Context } from 'koa';
+import { Context, Next } from 'koa';
 import { validate } from 'class-validator';
 import passport from 'koa-passport';
 import jwt from 'jsonwebtoken';
@@ -8,6 +8,39 @@ import User, { getUserRepository } from '../entity/User';
 import { hashPassword } from '../auth';
 
 export default class UserController {
+  static upsertUser = async (user: User | false, authError?: Error, info?) => {
+    const validationErrors = await validate(user);
+    const isNotValid = validationErrors.length > 0;
+    const [saveError] = user
+      ? await eres(getUserRepository().save(user))
+      : [Error('Unauthorized user')];
+
+    const message = authError
+      ? info.message
+      : isNotValid
+      ? 'Error during data validation'
+      : saveError
+      ? 'Error while saving data'
+      : '';
+
+    const errors = authError
+      ? [authError]
+      : isNotValid && saveError
+      ? [...validationErrors, saveError]
+      : isNotValid
+      ? validationErrors
+      : saveError
+      ? [saveError]
+      : [];
+
+    const statusCode = isNotValid || saveError || authError ? 400 : 201;
+
+    const data =
+      isNotValid || saveError || authError ? {} : (user as User).toJson();
+
+    return { message, errors, statusCode, data };
+  };
+
   static createNewUser = async (context: Context) => {
     const body = context.request.body;
 
@@ -17,37 +50,26 @@ export default class UserController {
       password: body.password ? await hashPassword(body.password) : '',
     });
 
-    const validationErrors = await validate(newUser);
-    const isNotValid = validationErrors.length > 0;
-    const [saveError] = await eres(getUserRepository().save(newUser));
+    const {
+      data,
+      message,
+      statusCode,
+      errors,
+    } = await UserController.upsertUser(newUser);
 
-    context.response.status = isNotValid || saveError ? 400 : 201;
-
-    const message = isNotValid
-      ? 'Error during data validation'
-      : saveError
-      ? 'Error while saving data'
-      : '';
-
-    const errors =
-      isNotValid && saveError
-        ? [...validationErrors, saveError]
-        : isNotValid || saveError
-        ? [saveError] || validationErrors
-        : [];
-
+    context.response.status = statusCode;
     context.body = {
-      data: isNotValid || saveError ? {} : newUser.toJson(),
+      data: data,
       message: message,
       errors: errors,
     };
   };
 
-  static login = async (context: Context) => {
+  static login = async (context: Context, next: Next) =>
     passport.authenticate(
       'local',
       { session: false },
-      (err: Error, user: User, info) => {
+      (err: Error, user: User | false, info) => {
         const token = user
           ? jwt.sign(user.toJson(), process.env.JWTSECRET, { expiresIn: '15m' })
           : null;
@@ -59,16 +81,15 @@ export default class UserController {
           error: [err],
         };
       },
-    );
-  };
+    )(context, next);
 
-  static getUserInfo = async (context: Context) => {
+  static getUserInfo = async (context: Context, next: Next) =>
     passport.authenticate(
       'jwt',
       { session: false },
-      async (err: Error, user: User, info) => {
+      async (err: Error, user: User | false, info) => {
         context.response.status = user ? 200 : 401;
-        const responseData = user ? { password: '', ...user } : {};
+        const responseData = user ? user.toJson() : {};
 
         context.body = {
           data: responseData,
@@ -76,52 +97,70 @@ export default class UserController {
           errors: [err],
         };
       },
-    );
-  };
+    )(context, next);
 
-  static updateUser = async (context: Context) => {
+  static updateUser = async (context: Context, next: Next) =>
     passport.authenticate(
       'jwt',
       { session: false },
-      async (err: Error, user: User, info) => {
+      async (err: Error, user: User | false, info) => {
         const body = context.request.body;
 
-        user.name = body.name || user.name;
-        user.email = body.email || user.email;
-        user.password = body.password
-          ? await hashPassword(body.password)
-          : user.password;
+        if (user) {
+          user.name = body.name || user.name;
+          user.email = body.email || user.email;
+          user.password = body.password
+            ? await hashPassword(body.password)
+            : user.password;
+        }
 
-        const errors = await validate(user);
-        const foundErrors = errors.length > 0;
-        const message =
-          info.message ||
-          (foundErrors ? 'Error during data validation' : null) ||
-          '';
+        const {
+          data,
+          message,
+          errors,
+          statusCode,
+        } = await UserController.upsertUser(user, err, info);
 
+        context.response.status = statusCode;
         context.body = {
-          data: foundErrors ? {} : user.toJson(),
+          data: data,
           message: message,
-          errors: err ? [err] : errors,
+          errors: errors,
         };
       },
-    );
-  };
+    )(context, next);
 
-  static deleteUser = async (context: Context) => {
+  static deleteUser = async (context: Context, next: Next) =>
     passport.authenticate(
       'jwt',
       { session: false },
-      async (err: Error, user: User, info) => {
+      async (err: Error, user: User | false, info) => {
         context.reponse.status = user ? 204 : 401;
-        await getUserRepository().remove(user);
+
+        const [deleteError] = user
+          ? await eres(getUserRepository().remove(user))
+          : [Error('Unauthorized user')];
+
+        const message = err
+          ? info.message
+          : deleteError
+          ? 'Error while deleting'
+          : '';
+
+        const errors =
+          err && deleteError
+            ? [err, deleteError]
+            : err
+            ? [err]
+            : deleteError
+            ? [deleteError]
+            : [];
 
         context.body = {
           data: {},
-          message: info.message,
-          errors: [err],
+          message: message,
+          errors: errors,
         };
       },
-    );
-  };
+    )(context, next);
 }
