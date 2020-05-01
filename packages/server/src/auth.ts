@@ -15,12 +15,12 @@ Passport.use(
   new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
     getUserRepository()
       .findOne({ email })
-      .then((user: User | null) => {
+      .then(async (user: User | null) => {
         if (!user) {
           return done(null, false, { message: 'Invalid email' });
         }
 
-        return user.checkPassword(password)
+        return (await user.checkPassword(password))
           ? done(null, user, { message: 'Successfully authenticated' })
           : done(null, false, { message: 'Invalid password' });
       })
@@ -40,10 +40,10 @@ Passport.use(
       .then((user: User | null) => {
         if (!user) {
           return done(null, false, {
-            message: 'Invalid username from the token',
+            message: 'Invalid token payload data',
           });
         }
-        return done(null, user, { message: 'Successfully authenticated' });
+        return done(null, user);
       })
       .catch((err: Error) => done(err));
   }),
