@@ -21,4 +21,6 @@ file, and then `yarn migration:run` to apply it. `yarn migration:run` is also ru
 automatically when the server is started.
 
 ### Tests
-`yarn test` or `yarn test:server` if you are in root.
+First, create a new table in the database for the tests and update the orcomfig
+files if necessary. After that, run `yarn test` or `yarn test:server` if you 
+are in root.
