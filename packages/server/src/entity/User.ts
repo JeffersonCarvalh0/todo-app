@@ -22,7 +22,7 @@ export default class User {
   @IsEmail()
   email: string;
 
-  @Column({ select: false })
+  @Column()
   @IsNotEmpty()
   password: string;
 
@@ -39,14 +39,8 @@ export default class User {
     };
   };
 
-  checkPassword = async (otherPassword: string) => {
-    try {
-      await bcrypt.compare(otherPassword, this.password);
-      return true;
-    } catch {
-      return false;
-    }
-  };
+  checkPassword = async (otherPassword: string) =>
+    await bcrypt.compare(otherPassword, this.password);
 }
 // https://github.com/typeorm/typeorm/issues/4010#issuecomment-612149115
 export const getUserRepository = () => getRepository(User);
