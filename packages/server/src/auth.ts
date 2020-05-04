@@ -17,14 +17,17 @@ Passport.use(
       .findOne({ email })
       .then(async (user: User | null) => {
         if (!user) {
-          return done(null, false, { message: 'Invalid email' });
+          return done(null, false, { message: 'Invalid credentials' });
         }
 
         return (await user.checkPassword(password))
           ? done(null, user, { message: 'Successfully authenticated' })
-          : done(null, false, { message: 'Invalid password' });
+          : done(null, false, { message: 'Invalid credentials' });
       })
-      .catch((err: Error) => done(err));
+      .catch((err: Error) => {
+        console.log(err);
+        return done(err);
+      });
   }),
 );
 
@@ -36,7 +39,7 @@ const opts = {
 Passport.use(
   new JwtStrategy(opts, (jwtPayload, done) => {
     getUserRepository()
-      .findOne({ name: jwtPayload.name })
+      .findOne({ email: jwtPayload.email })
       .then((user: User | null) => {
         if (!user) {
           return done(null, false, {
@@ -45,6 +48,9 @@ Passport.use(
         }
         return done(null, user);
       })
-      .catch((err: Error) => done(err));
+      .catch((err: Error) => {
+        console.log(err);
+        return done(err);
+      });
   }),
 );
