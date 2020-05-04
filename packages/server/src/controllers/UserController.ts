@@ -9,11 +9,16 @@ import { hashPassword } from '../auth';
 
 export default class UserController {
   static upsertUser = async (user: User | false, authError?: Error, info?) => {
+    if (authError) console.log(authError);
+
     const validationErrors = await validate(user);
     const isNotValid = validationErrors.length > 0;
+    if (isNotValid) console.log(validationErrors);
+
     const [saveError] = user
       ? await eres(getUserRepository().save(user))
       : [Error('Unauthorized user')];
+    if (saveError) console.log(saveError);
 
     const message = authError
       ? info.message
@@ -33,7 +38,8 @@ export default class UserController {
       ? [saveError]
       : [];
 
-    const statusCode = isNotValid || saveError || authError ? 400 : 201;
+    const statusCode =
+      !user || authError ? 401 : isNotValid || saveError ? 400 : 201;
 
     const data =
       isNotValid || saveError || authError ? {} : (user as User).toJson();
@@ -49,6 +55,8 @@ export default class UserController {
       email: body.email,
       password: body.password ? await hashPassword(body.password) : '',
     });
+
+    console.log(`New user object: ${newUser}`);
 
     const {
       data,
@@ -70,15 +78,17 @@ export default class UserController {
       'local',
       { session: false },
       (err: Error, user: User | false, info) => {
+        if (err) console.log(err);
+
         const token = user
           ? jwt.sign(user.toJson(), process.env.JWTSECRET, { expiresIn: '15m' })
           : null;
 
-        context.response.status = err ? 401 : 200;
+        context.response.status = err || !user ? 401 : 200;
         context.body = {
-          data: { token },
+          data: token ? { token } : {},
           message: info.message,
-          error: [err],
+          errors: err ? [err] : [],
         };
       },
     )(context, next);
@@ -88,12 +98,13 @@ export default class UserController {
       'jwt',
       { session: false },
       async (err: Error, user: User | false, info) => {
+        if (err) console.log(err);
         context.response.status = user ? 200 : 401;
         const responseData = user ? user.toJson() : {};
 
         context.body = {
           data: responseData,
-          message: info.message,
+          message: info ? info.message : '',
           errors: [err],
         };
       },
@@ -104,14 +115,12 @@ export default class UserController {
       'jwt',
       { session: false },
       async (err: Error, user: User | false, info) => {
+        if (err) console.log(err);
         const body = context.request.body;
 
         if (user) {
           user.name = body.name || user.name;
           user.email = body.email || user.email;
-          user.password = body.password
-            ? await hashPassword(body.password)
-            : user.password;
         }
 
         const {
@@ -130,21 +139,99 @@ export default class UserController {
       },
     )(context, next);
 
+  static updatePassword = async (context: Context, next: Next) =>
+    passport.authenticate(
+      'jwt',
+      { session: false },
+      async (err: Error, user: User | false, info) => {
+        if (err) console.log(err);
+
+        const body = context.request.body;
+        const requestError =
+          !body.oldPassword || !body.newPassword || !body.newPasswordConfirm;
+
+        const newPasswordMismatch =
+          body.newPassword !== body.newPasswordConfirm;
+
+        const incorrectOldPassword =
+          user && !requestError
+            ? !(await user.checkPassword(body.oldPassword))
+            : true;
+        console.log('password checked');
+
+        const canUpdate =
+          user &&
+          !err &&
+          !requestError &&
+          !newPasswordMismatch &&
+          !incorrectOldPassword;
+
+        if (canUpdate) {
+          (user as User).password = await hashPassword(body.newPassword);
+          console.log('user updated');
+        }
+
+        const requestBodyError = Error('Invalid request body');
+        const passwordMismatchError = Error('The passwords do not match');
+
+        const [updateError] = canUpdate
+          ? await eres(getUserRepository().save(user as User))
+          : [requestBodyError];
+        console.log(updateError);
+
+        const message = err
+          ? info.message
+          : requestError
+          ? requestBodyError.message
+          : newPasswordMismatch
+          ? passwordMismatchError.message
+          : incorrectOldPassword
+          ? 'Incorrect old password'
+          : updateError
+          ? updateError.message
+          : '';
+
+        const errors =
+          err || !user
+            ? [Error('Unauthorized user')]
+            : requestError
+            ? [requestBodyError]
+            : newPasswordMismatch
+            ? [passwordMismatchError]
+            : updateError
+            ? [updateError]
+            : [];
+
+        context.response.status = !user
+          ? 401
+          : !canUpdate || updateError
+          ? 400
+          : 200;
+
+        context.body = {
+          data: {},
+          message: message,
+          errors: errors,
+        };
+      },
+    )(context, next);
+
   static deleteUser = async (context: Context, next: Next) =>
     passport.authenticate(
       'jwt',
       { session: false },
       async (err: Error, user: User | false, info) => {
-        context.reponse.status = user ? 204 : 401;
+        if (err) console.log(err);
 
         const [deleteError] = user
           ? await eres(getUserRepository().remove(user))
           : [Error('Unauthorized user')];
+        if (deleteError) console.log(deleteError);
 
         const message = err
           ? info.message
           : deleteError
-          ? 'Error while deleting'
+          ? deleteError.message
           : '';
 
         const errors =
@@ -156,6 +243,7 @@ export default class UserController {
             ? [deleteError]
             : [];
 
+        context.response.status = user ? 200 : 401;
         context.body = {
           data: {},
           message: message,
