@@ -21,6 +21,8 @@ jobs:
         with:
           postgresql version: '12.2'
           postgresql db: todo-test
+          postgresql user: test
+          postgresql password: password
       - run: yarn install
       - run: yarn lint:server
       - run: yarn test:server
