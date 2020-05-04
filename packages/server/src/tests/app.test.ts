@@ -1,9 +1,10 @@
 import 'dotenv/config';
 import request from 'supertest';
-import runApp from '../app';
+import start from '../app';
 
 test('Hello world works', async () => {
-  const response = await request(runApp()).get('/');
+  const app = await start();
+  const response = await request(app.listen()).get('/');
   expect(response.status).toBe(404);
   expect(response.body.message).toBe(undefined);
 });
