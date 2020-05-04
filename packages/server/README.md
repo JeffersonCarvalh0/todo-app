@@ -1,3 +1,4 @@
+![Release(Server)](https://github.com/JeffersonCarvalh0/todo-app/workflows/Release(Server)/badge.svg)
 # Server
 The todo app server.
 

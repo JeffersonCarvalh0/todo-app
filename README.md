@@ -5,6 +5,7 @@ of the website
 
 ## Stack
 ### Web
+![Release(Web)](https://github.com/JeffersonCarvalh0/todo-app/workflows/Release(Web)/badge.svg)
  - Typescript
  - React(with hooks)
  - Storybook
@@ -12,6 +13,7 @@ of the website
  - Jest/React testing library
 
 ### Server
+![Release(Server)](https://github.com/JeffersonCarvalh0/todo-app/workflows/Release(Server)/badge.svg)
  - Typescript
  - Koa
  - Typeorm
