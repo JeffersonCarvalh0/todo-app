@@ -9,10 +9,9 @@ on:
       - master
       
 jobs:
-  container-job:
+  development:
     name: Test
     runs-on: ubuntu-latest
-    container: node:12
 
     services:
       postgres:
