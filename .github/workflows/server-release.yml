@@ -10,14 +10,24 @@ on:
 
 jobs:
   deploy:
+    name: Test
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:12.2
+        env:
+          POSTGRES_USER: typeorm
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: todo-test
+        ports: 
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
-      - name: checkout
-        uses: actions/checkout@v1
+      - uses: actions/checkout@v1
         with:
           ref: master
-
       - uses: actions/setup-node@v1
         with:
           node-version: '12.0.0'

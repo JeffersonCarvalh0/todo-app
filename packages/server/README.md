@@ -4,13 +4,10 @@ The todo app server.
 
 ## Instructions
 ### Prerequisites
-You will need to have [mysql installed](https://dev.mysql.com/doc/mysql-getting-started/en/).
-In order to boot up the sever for development, create a new user that can be used
-by the server, and update the credentials in the `ormconfig.json` files both in
-root and in the server folder (the `ormconfig` file in the root is a workaround
-needed because of the monorepo - there is an [open issue](https://github.com/typeorm/typeorm/issues/2805)
-about that). After the user is created, create a new table to be used by the 
-server and update it in the `ormconfig` files.
+You will need to have [PostgreSQL](https://dev.mysql.com/doc/mysql-getting-started/en/) installed.
+In order to boot up the sever for development, create a user named `typeorm`
+with password `password`. After the user is created, create a new table named
+`todo` to be used by the server.
 
 ### Starting the server
 Run `yarn start` to boot up the server, or `yarn start:server` if you are in the
@@ -22,4 +19,5 @@ file, and then `yarn migration:run` to apply it. `yarn migration:run` is also ru
 automatically when the server is started.
 
 ### Tests
-`yarn test` or `yarn test:server` if you are in root.
+First, create a new table named `todo-test` in the database for the tests.
+After that, run `yarn test` or `yarn test:server` if you are in root.

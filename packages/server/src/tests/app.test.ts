@@ -1,10 +1,10 @@
+import 'dotenv/config';
 import request from 'supertest';
-import app from '../app';
+import start from '../app';
 
 test('Hello world works', async () => {
-  const response = await request(app.callback()).get('/');
-  expect(response.status).toBe(200);
-  expect(response.body.message).toBe(
-    'Automatically deployed with github actions!!!',
-  );
+  const app = await start();
+  const response = await request(app.listen()).get('/');
+  expect(response.status).toBe(404);
+  expect(response.body.message).toBe(undefined);
 });

@@ -1,30 +1,31 @@
 import Koa from 'koa';
-import Router from 'koa-router';
-
 import logger from 'koa-logger';
 import json from 'koa-json';
 import bodyParser from 'koa-bodyparser';
+import helmet from 'koa-helmet';
+import { createConnection } from 'typeorm';
 
-const app = new Koa();
-const router = new Router();
+import router from './routes';
 
-/** Middlewares */
-app.use(json());
-app.use(logger());
-app.use(bodyParser());
+const start = async (port?: string | number) => {
+  const app = new Koa();
 
-/** Routes */
-app.use(router.routes()).use(router.allowedMethods());
+  /** Middlewares */
+  app.use(helmet());
+  app.use(json());
+  app.use(logger());
+  app.use(bodyParser());
 
-router.get('/', async (ctx: Koa.Context) => {
-  ctx.body = { message: 'Automatically deployed with github actions!!!' };
-});
+  /** Database connection */
+  await createConnection()
+    .then(() => console.log(`TypeORM successfully connected the database!`))
+    .catch((error) => console.log('TypeORM connection error: ', error));
 
-router.post('/data', async (ctx: Koa.Context) => {
-  ctx.body = {
-    message: 'This is your POST route, attached you can find the data you sent',
-    body: ctx.request.body,
-  };
-});
+  /** Routes */
+  app.use(router.routes()).use(router.allowedMethods());
 
-export default app;
+  if (port) app.listen(port);
+  return app;
+};
+
+export default start;
