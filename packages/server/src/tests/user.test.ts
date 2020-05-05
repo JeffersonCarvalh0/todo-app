@@ -1,7 +1,5 @@
-import 'dotenv/config';
-import 'reflect-metadata';
 import request from 'supertest';
-import { createConnection, getConnection } from 'typeorm';
+import { createConnection } from 'typeorm';
 
 import start from '../app';
 import { getUserRepository } from '../entity/User';
@@ -10,10 +8,6 @@ beforeAll(async () => {
   const connection = await createConnection();
   await getUserRepository().clear();
   await connection.close();
-});
-
-afterEach(async () => {
-  await getConnection().close();
 });
 
 describe('User', () => {
