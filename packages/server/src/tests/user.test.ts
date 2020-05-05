@@ -119,7 +119,9 @@ describe('User', () => {
 
   it('Should not get any user information if not authorized', async () => {
     const app = await start();
-    await request(app.listen()).get('/api/user').expect(401);
+    const response = await request(app.listen()).get('/api/user').expect(401);
+
+    expect(response.body.data).toEqual({});
   });
 
   it('Should update the user data', async () => {
