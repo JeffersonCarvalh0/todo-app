@@ -8,9 +8,7 @@ import User, { getUserRepository } from '../entity/User';
 import { hashPassword } from '../auth';
 
 export default class UserController {
-  static upsertUser = async (user: User | false, authError?: Error, info?) => {
-    if (authError) console.log(authError);
-
+  static upsertUser = async (user: User | false, info?) => {
     const validationErrors = await validate(user);
     const isNotValid = validationErrors.length > 0;
     if (isNotValid) console.log(validationErrors);
@@ -20,7 +18,7 @@ export default class UserController {
       : [Error('Unauthorized user')];
     if (saveError) console.log(saveError);
 
-    const message = authError
+    const message = !user
       ? info.message
       : isNotValid
       ? 'Error during data validation'
@@ -28,8 +26,8 @@ export default class UserController {
       ? 'Error while saving data'
       : '';
 
-    const errors = authError
-      ? [authError]
+    const errors = !user
+      ? [Error('Unauthorized user')]
       : isNotValid && saveError
       ? [...validationErrors, saveError]
       : isNotValid
@@ -38,12 +36,9 @@ export default class UserController {
       ? [saveError]
       : [];
 
-    const statusCode =
-      !user || authError ? 401 : isNotValid || saveError ? 400 : 201;
-
+    const statusCode = !user ? 401 : isNotValid || saveError ? 400 : 201;
     const data =
-      isNotValid || saveError || authError ? {} : (user as User).toJson();
-
+      isNotValid || saveError || !user ? {} : (user as User).toJson();
     return { message, errors, statusCode, data };
   };
 
@@ -55,8 +50,6 @@ export default class UserController {
       email: body.email,
       password: body.password ? await hashPassword(body.password) : '',
     });
-
-    console.log(`New user object: ${newUser}`);
 
     const {
       data,
@@ -128,7 +121,7 @@ export default class UserController {
           message,
           errors,
           statusCode,
-        } = await UserController.upsertUser(user, err, info);
+        } = await UserController.upsertUser(user, info);
 
         context.response.status = statusCode;
         context.body = {
