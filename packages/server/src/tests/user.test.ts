@@ -1,19 +1,13 @@
-import 'dotenv/config';
-import 'reflect-metadata';
 import request from 'supertest';
-import { createConnection, getConnection } from 'typeorm';
+import { createConnection } from 'typeorm';
 
 import start from '../app';
 import { getUserRepository } from '../entity/User';
 
 beforeAll(async () => {
   const connection = await createConnection();
-  await getUserRepository().clear();
+  await getUserRepository().delete({});
   await connection.close();
-});
-
-afterEach(async () => {
-  await getConnection().close();
 });
 
 describe('User', () => {
@@ -125,7 +119,9 @@ describe('User', () => {
 
   it('Should not get any user information if not authorized', async () => {
     const app = await start();
-    await request(app.listen()).get('/api/user').expect(401);
+    const response = await request(app.listen()).get('/api/user').expect(401);
+
+    expect(response.body.data).toEqual({});
   });
 
   it('Should update the user data', async () => {
