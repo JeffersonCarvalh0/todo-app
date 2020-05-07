@@ -6,7 +6,7 @@ import { getUserRepository } from '../entity/User';
 
 beforeAll(async () => {
   const connection = await createConnection();
-  await getUserRepository().clear();
+  await getUserRepository().delete({});
   await connection.close();
 });
 

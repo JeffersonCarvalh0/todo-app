@@ -5,7 +5,13 @@ import start from '../app';
 import Todo, { getTodoRepository } from '../entity/Todo';
 import { getUserRepository } from '../entity/User';
 
-const todoListsEquals = (todosList1: Todo[], todosList2: Todo[]) => {
+interface TodoJson {
+  title: string;
+  description: string;
+  done: boolean;
+}
+
+const todoListsEquals = (todosList1: TodoJson[], todosList2: TodoJson[]) => {
   const zippedTodos = R.zip(todosList1, todosList2);
   return R.all(
     (todoPair) =>
@@ -21,7 +27,8 @@ let token = '';
 beforeAll(async () => {
   const app = await start();
   const server = app.listen();
-  await getUserRepository().clear();
+  await getTodoRepository().delete({});
+  await getUserRepository().delete({});
 
   const testUserData = {
     name: 'John Doe',
@@ -35,31 +42,31 @@ beforeAll(async () => {
     .send(testUserData);
 
   token = loginResponse.body.data.token;
-  await getTodoRepository().clear();
+  server.close();
 });
 
 describe('Todo', () => {
   const todo = {
     title: 'Sample title',
-    body: 'Sample body',
+    description: 'Sample body',
     done: false,
   };
 
   const todo2 = {
     title: 'Sample title1',
-    body: 'Sample body1',
+    description: 'Sample body1',
     done: false,
   };
 
   const todo3 = {
     title: 'Sample title2',
-    body: 'Sample body2',
+    description: 'Sample body2',
     done: false,
   };
 
   it('Should not create a new todo if not authorized', async () => {
     const app = await start();
-    const response = await request(app.listen)
+    const response = await request(app.listen())
       .post('/api/todo')
       .send(todo)
       .expect(401);
@@ -76,21 +83,24 @@ describe('Todo', () => {
       .set('Authorization', `Bearer ${token}`)
       .send(todo)
       .expect(201);
-    expect(response.body.data.todo).toEqual(todo);
+    expect(response.body.data.title).toEqual(todo.title);
+    expect(response.body.data.description).toEqual(todo.description);
 
     const response2 = await request(server)
       .post('/api/todo')
       .set('Authorization', `Bearer ${token}`)
       .send(todo2)
       .expect(201);
-    expect(response2.body.data.todo).toEqual(todo2);
+    expect(response2.body.data.title).toEqual(todo2.title);
+    expect(response2.body.data.description).toEqual(todo2.description);
 
     const response3 = await request(server)
       .post('/api/todo')
       .set('Authorization', `Bearer ${token}`)
       .send(todo3)
       .expect(201);
-    expect(response3.body.data.todo).toEqual(todo3);
+    expect(response3.body.data.title).toEqual(todo3.title);
+    expect(response3.body.data.description).toEqual(todo3.description);
   });
 
   it('Should get all todos', async () => {
@@ -179,7 +189,7 @@ describe('Todo', () => {
     expect(response.body.data).toEqual({});
   });
 
-  it('Should deltete a todo', async () => {
+  it('Should remove a todo', async () => {
     const app = await start();
     const server = app.listen();
 
@@ -197,12 +207,9 @@ describe('Todo', () => {
       .get('/api/todo')
       .set('Authorization', `Bearer ${token}`);
 
-    const wasRemoved = R.none(
-      (todo: Todo) => todo.title === 'New sample title',
-      newTodosResponse.body.data,
+    expect(newTodosResponse.body.data.length).toEqual(
+      todosResponse.body.data.length - 1,
     );
-
-    expect(wasRemoved).toBeTruthy();
   });
 
   it('Should not remove a todo if unauthorized', async () => {
