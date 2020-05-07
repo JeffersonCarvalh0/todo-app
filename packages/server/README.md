@@ -4,12 +4,13 @@ The todo app server.
 
 ## Instructions
 ### Prerequisites
-You will need to have [PostgreSQL](https://dev.mysql.com/doc/mysql-getting-started/en/) installed.
-In order to boot up the sever for development, create a user named `typeorm`
-with password `password`. After the user is created, create a new table named
-`todo` to be used by the server.
+You will need to have PostgreSQL installed. In order to boot up the sever for
+development, create a user named `typeorm` with password `password`. After the
+user is created, create a new table named `todo` to be used by the server.
 
 ### Starting the server
+Copy the `.env.development` file located in the server root folder to the same
+directory, but just as `env`. (ex: `cp packages/server/.env.development .env`).
 Run `yarn start` to boot up the server, or `yarn start:server` if you are in the
 monorepo's root.
 
