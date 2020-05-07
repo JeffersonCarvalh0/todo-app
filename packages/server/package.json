@@ -15,7 +15,7 @@
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --fix",
     "migration:generate": "ts-node ../../node_modules/typeorm/cli.js migration:generate -d src/migrations",
     "migration:run": "yarn ts-node ../../node_modules/typeorm/cli.js migration:run",
-    "test": "NODE_ENV=test yarn migration:run && jest"
+    "test": "NODE_ENV=test yarn migration:run && jest --forceExit --detectOpenHandles --maxWorkers=10"
   },
   "dependencies": {
     "bcrypt": "^4.0.1",
