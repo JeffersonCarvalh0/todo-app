@@ -1,11 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn, getRepository } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  getRepository,
+} from 'typeorm';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import bcrypt from 'bcrypt';
+
+import Todo from '../entity/Todo';
 
 interface UserType {
   name?: string;
   email?: string;
   password?: string;
+  todos?: Todo[];
 }
 
 @Entity()
@@ -26,6 +35,9 @@ export default class User {
   @IsNotEmpty()
   password: string;
 
+  @OneToMany((type) => Todo, (todo: Todo) => todo.createdBy)
+  todos: Todo[];
+
   constructor({ name, email, password }: UserType = {}) {
     this.name = name;
     this.email = email;
@@ -36,6 +48,7 @@ export default class User {
     return {
       name: this.name,
       email: this.email,
+      id: this.id,
     };
   };
 

@@ -14,7 +14,7 @@ export const hashPassword = async (plainTextPassword: string) => {
 Passport.use(
   new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
     getUserRepository()
-      .findOne({ email })
+      .findOne({ relations: ['todos'], where: { email } })
       .then(async (user: User | null) => {
         if (!user) {
           return done(null, false, { message: 'Invalid credentials' });
@@ -25,7 +25,6 @@ Passport.use(
           : done(null, false, { message: 'Invalid credentials' });
       })
       .catch((err: Error) => {
-        console.log(err);
         return done(err);
       });
   }),
@@ -39,7 +38,7 @@ const opts = {
 Passport.use(
   new JwtStrategy(opts, (jwtPayload, done) => {
     getUserRepository()
-      .findOne({ email: jwtPayload.email })
+      .findOne({ relations: ['todos'], where: { email: jwtPayload.email } })
       .then((user: User | null) => {
         if (!user) {
           return done(null, false, {
@@ -49,7 +48,6 @@ Passport.use(
         return done(null, user);
       })
       .catch((err: Error) => {
-        console.log(err);
         return done(err);
       });
   }),

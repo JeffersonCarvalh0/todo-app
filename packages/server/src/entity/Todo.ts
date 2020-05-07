@@ -1,11 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn, getRepository } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  getRepository,
+} from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
 
-interface TodoType {
+import User from '../entity/User';
+
+export interface TodoType {
   id?: number;
   title?: string;
   description?: string;
   done?: boolean;
+  createdBy?: User;
 }
 
 @Entity()
@@ -23,12 +32,30 @@ export default class Todo {
   @Column({ default: false })
   done: boolean;
 
-  constructor({ id, title, description, done }: TodoType = {}) {
+  @ManyToOne((type) => User, (user: User) => user.todos, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  @IsNotEmpty()
+  createdBy: User;
+
+  constructor({ id, title, description, done, createdBy }: TodoType = {}) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.done = done;
+    this.createdBy = createdBy;
   }
+
+  toJson = () => {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      done: this.done,
+      createdBy: this.createdBy.toJson(),
+    };
+  };
 }
 
 export const getTodoRepository = () => getRepository(Todo);
