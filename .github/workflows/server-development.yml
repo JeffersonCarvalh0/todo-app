@@ -32,3 +32,5 @@ jobs:
       - run: yarn install
       - run: yarn lint:server
       - run: yarn test:server
+        env:
+          JWTSECRET: testkey
