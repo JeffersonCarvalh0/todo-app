@@ -5,6 +5,17 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import koaSwagger from 'koa2-swagger-ui';
 
 const port = process.env.PORT || 3000;
+
+const developmentServer = {
+  url: `http://localhost:${port}/api`,
+  description: 'Development server',
+};
+
+const productionServer = {
+  url: 'https://todo-app-server0.herokuapp.com/api',
+  description: 'Production server',
+};
+
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -12,16 +23,10 @@ const options = {
       title: 'Todo API',
       version: '1.0.0',
     },
-    servers: [
-      {
-        url: `http://localhost:${port}/api`,
-        description: 'Development server',
-      },
-      {
-        url: 'https://todo-app-server0.herokuapp.com/api',
-        description: 'Production server',
-      },
-    ],
+    servers:
+      process.env.NODE_ENV === 'production'
+        ? [developmentServer]
+        : [developmentServer, productionServer],
     components: {
       securitySchemes: {
         bearerAuth: {
