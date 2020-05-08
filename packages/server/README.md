@@ -22,3 +22,7 @@ automatically when the server is started.
 ### Tests
 First, create a new table named `todo-test` in the database for the tests.
 After that, run `yarn test` or `yarn test:server` if you are in root.
+
+### Docs
+You can view the docs by accessing the `/docs` endpoint with the server running,
+by simply accessing `localhost:3000/docs`

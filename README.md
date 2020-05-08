@@ -1,7 +1,8 @@
 # Todo app
 A todo app monorepo with web and server.
 visit https://jeffersoncarvalh0.github.io/todo-app/ to see a live version
-of the website
+of the website, and https://todo-app-server0.herokuapp.com/docs to read the
+server API docs online.
 
 ## Stack
 ### Web
