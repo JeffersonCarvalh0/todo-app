@@ -25,7 +25,7 @@ const options = {
     },
     servers:
       process.env.NODE_ENV === 'production'
-        ? [developmentServer]
+        ? [productionServer]
         : [developmentServer, productionServer],
     components: {
       securitySchemes: {
