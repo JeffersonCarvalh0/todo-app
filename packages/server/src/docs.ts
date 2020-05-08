@@ -11,8 +11,20 @@ const options = {
       title: 'Todo API',
       version: '1.0.0',
     },
+    host: 'todo-app-server0.herokuapp.com',
+    basePath: '/api',
+    schemes: ['https'],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
-  apis: ['./routes/**'],
+  apis: ['**/*.ts'],
 };
 const swaggerSpec = swaggerJSDoc(options);
 

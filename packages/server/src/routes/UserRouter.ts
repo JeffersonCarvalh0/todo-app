@@ -20,6 +20,7 @@ import UserController from '../controllers/UserController';
  *       password:
  *         type: "string"
  *         format: password
+ *
  *   User:
  *     type: "object"
  *     required:
@@ -34,9 +35,10 @@ import UserController from '../controllers/UserController';
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/36161#issuecomment-571295417
 const userRouter = new Router<DefaultState, Context>()
+
   /**
    * @swagger
-   * /login:
+   * /api/login:
    *   post:
    *     tags:
    *       - "User"
@@ -71,7 +73,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /user:
+   * /api/user:
    *   post:
    *     tags:
    *       - "User"
@@ -96,7 +98,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /user:
+   * /api/user:
    *   get:
    *     tags:
    *       - "User"
@@ -118,7 +120,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /user:
+   * /api/user:
    *   put:
    *     tags:
    *       - "User"
@@ -152,7 +154,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /user/password:
+   * /api/user/password:
    *   put:
    *     tags:
    *       - "User"
@@ -191,7 +193,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /user:
+   * /api/user:
    *   delete:
    *     tags:
    *       - "User"
