@@ -3,9 +3,11 @@ import logger from 'koa-logger';
 import json from 'koa-json';
 import bodyParser from 'koa-bodyparser';
 import helmet from 'koa-helmet';
+
 import { createConnection } from 'typeorm';
 
 import router from './routes';
+import docsRouter from './docs';
 
 const start = async (port?: string | number) => {
   const app = new Koa();
@@ -23,6 +25,7 @@ const start = async (port?: string | number) => {
 
   /** Routes */
   app.use(router.routes()).use(router.allowedMethods());
+  app.use(docsRouter.routes());
 
   if (port) app.listen(port);
   return app;
