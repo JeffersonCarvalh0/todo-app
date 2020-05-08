@@ -38,7 +38,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/login:
+   * /login:
    *   post:
    *     tags:
    *       - "User"
@@ -73,7 +73,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/user:
+   * /user:
    *   post:
    *     tags:
    *       - "User"
@@ -98,7 +98,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/user:
+   * /user:
    *   get:
    *     tags:
    *       - "User"
@@ -120,7 +120,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/user:
+   * /user:
    *   put:
    *     tags:
    *       - "User"
@@ -154,7 +154,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/user/password:
+   * /user/password:
    *   put:
    *     tags:
    *       - "User"
@@ -193,7 +193,7 @@ const userRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/user:
+   * /user:
    *   delete:
    *     tags:
    *       - "User"

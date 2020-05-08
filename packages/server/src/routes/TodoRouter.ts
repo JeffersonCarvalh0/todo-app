@@ -39,7 +39,7 @@ const todoRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/todo:
+   * /todo:
    *   post:
    *     tags:
    *       - "Todo"
@@ -68,7 +68,7 @@ const todoRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/todo:
+   * /todo:
    *   get:
    *     tags:
    *       - "Todo"
@@ -92,7 +92,7 @@ const todoRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/todo/{todoId}:
+   * /todo/{todoId}:
    *   get:
    *     tags:
    *       - "Todo"
@@ -121,7 +121,7 @@ const todoRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/todo/{todoId}:
+   * /todo/{todoId}:
    *   put:
    *     tags:
    *       - "Todo"
@@ -157,7 +157,7 @@ const todoRouter = new Router<DefaultState, Context>()
 
   /**
    * @swagger
-   * /api/todo/{todoId}:
+   * /todo/{todoId}:
    *   delete:
    *     tags:
    *       - "Todo"

@@ -4,6 +4,7 @@ import Router from 'koa-router';
 import swaggerJSDoc from 'swagger-jsdoc';
 import koaSwagger from 'koa2-swagger-ui';
 
+const port = process.env.PORT || 3000;
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -11,9 +12,16 @@ const options = {
       title: 'Todo API',
       version: '1.0.0',
     },
-    host: 'todo-app-server0.herokuapp.com',
-    basePath: '/api',
-    schemes: ['https'],
+    servers: [
+      {
+        url: `http://localhost:${port}/api`,
+        description: 'Development server',
+      },
+      {
+        url: 'https://todo-app-server0.herokuapp.com/api',
+        description: 'Production server',
+      },
+    ],
     components: {
       securitySchemes: {
         bearerAuth: {
