@@ -4,6 +4,9 @@ const databaseURL =
     ? 'postgres://typeorm:password@localhost:5432/todo-test'
     : process.env.DATABASE_URL;
 
+console.log(`root settings NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`root settings databaseURL: ${process.env.DATABASE_URL}`);
+
 const dirs =
   process.env.NODE_ENV === 'production'
     ? {
