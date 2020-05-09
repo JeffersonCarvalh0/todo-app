@@ -12,9 +12,9 @@ const dirs =
         migrations: ['/packages/server/build/migrations/*.js'],
       }
     : {
-        entities: [__dirname + '/src/entity/*.ts'],
-        subscribers: ['src/subscriber/*.ts'],
-        migrations: ['src/migrations/*.ts'],
+        entities: [__dirname + '/packages/server/src/entity/*.ts'],
+        subscribers: ['packages/server/src/subscriber/*.ts'],
+        migrations: ['packages/server/src/migrations/*.ts'],
       };
 
 module.exports = {
@@ -25,8 +25,8 @@ module.exports = {
   migrations: dirs.migrations,
   entities: dirs.entities,
   cli: {
-    entitiesDir: './packages/server//src/entity',
-    migrationsDir: './packages/server//src/migrations',
-    subscribersDir: './packages/server//src/subscriber',
+    entitiesDir: './packages/server/src/entity',
+    migrationsDir: './packages/server/src/migrations',
+    subscribersDir: './packages/server/src/subscriber',
   },
 };
