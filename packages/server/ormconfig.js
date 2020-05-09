@@ -21,7 +21,7 @@ module.exports = {
   logging: false,
   subscribers: dirs.subscribers,
   entities: dirs.entities,
-  migrations: 'src/migrations/*.ts',
+  migrations: ['src/migrations/*.ts'],
   cli: {
     entitiesDir: './src/entity',
     migrationsDir: './src/migrations',
