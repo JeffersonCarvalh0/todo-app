@@ -12,12 +12,10 @@ const dirs =
         migrations: ['build/migrations/*.js'],
       }
     : {
-        entities: ['src/entity/*.ts'],
+        entities: [__dirname + '/src/entity/*.ts'],
         subscribers: ['src/subscriber/*.ts'],
         migrations: ['src/migrations/*.ts'],
       };
-
-console.log(dirs.migrations);
 
 module.exports = {
   type: 'postgres',
