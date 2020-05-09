@@ -1,1 +1,1 @@
-web: yarn workspace server start:prod
+web: yarn start:server
