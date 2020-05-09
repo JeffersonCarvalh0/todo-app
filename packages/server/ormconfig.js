@@ -9,19 +9,23 @@ const dirs =
     ? {
         entities: [__dirname + '/build/entity/*.js'],
         subscribers: ['build/subscriber/*.js'],
+        migrations: ['build/migrations/*.js'],
       }
     : {
         entities: ['src/entity/*.ts'],
         subscribers: ['src/subscriber/*.ts'],
+        migrations: ['src/migrations/*.ts'],
       };
+
+console.log(dirs.migrations);
 
 module.exports = {
   type: 'postgres',
   url: databaseURL,
   logging: false,
   subscribers: dirs.subscribers,
+  migrations: dirs.migrations,
   entities: dirs.entities,
-  migrations: ['src/migrations/*.ts'],
   cli: {
     entitiesDir: './src/entity',
     migrationsDir: './src/migrations',
