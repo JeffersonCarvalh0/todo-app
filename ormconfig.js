@@ -7,9 +7,9 @@ const databaseURL =
 const dirs =
   process.env.NODE_ENV === 'production'
     ? {
-        entities: [__dirname + '/build/entity/*.js'],
-        subscribers: ['build/subscriber/*.js'],
-        migrations: ['build/migrations/*.js'],
+        entities: [__dirname + '/packages/server/build/entity/*.js'],
+        subscribers: ['/packages/server/build/subscriber/*.js'],
+        migrations: ['/packages/server/build/migrations/*.js'],
       }
     : {
         entities: [__dirname + '/src/entity/*.ts'],
@@ -25,8 +25,8 @@ module.exports = {
   migrations: dirs.migrations,
   entities: dirs.entities,
   cli: {
-    entitiesDir: './src/entity',
-    migrationsDir: './src/migrations',
-    subscribersDir: './src/subscriber',
+    entitiesDir: './packages/server//src/entity',
+    migrationsDir: './packages/server//src/migrations',
+    subscribersDir: './packages/server//src/subscriber',
   },
 };
