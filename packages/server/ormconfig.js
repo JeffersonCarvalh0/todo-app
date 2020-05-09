@@ -4,20 +4,15 @@ const databaseURL =
     ? 'postgres://typeorm:password@localhost:5432/todo-test'
     : process.env.DATABASE_URL;
 
-console.log(`server settings NODE_ENV: ${process.env.NODE_ENV}`);
-console.log(`server settings databaseURL: ${process.env.DATABASE_URL}`);
-
 const dirs =
   process.env.NODE_ENV === 'production'
     ? {
         entities: [__dirname + '/build/entity/*.js'],
         subscribers: ['build/subscriber/*.js'],
-        migrations: ['build/migrations/*.js'],
       }
     : {
         entities: ['src/entity/*.ts'],
         subscribers: ['src/subscriber/*.ts'],
-        migrations: ['src/migrations/*.ts'],
       };
 
 module.exports = {
@@ -25,8 +20,8 @@ module.exports = {
   url: databaseURL,
   logging: false,
   subscribers: dirs.subscribers,
-  migrations: dirs.migrations,
   entities: dirs.entities,
+  migrations: 'src/migrations/*.ts',
   cli: {
     entitiesDir: './src/entity',
     migrationsDir: './src/migrations',
