@@ -8,14 +8,16 @@ const dirs =
   process.env.NODE_ENV === 'production'
     ? {
         entities: [__dirname + '/packages/server/build/entity/*.js'],
-        subscribers: ['/packages/server/build/subscriber/*.js'],
-        migrations: ['/packages/server/build/migrations/*.js'],
+        subscribers: ['packages/server/build/subscriber/*.js'],
+        migrations: ['packages/server/build/migrations/*.js'],
       }
     : {
         entities: [__dirname + '/packages/server/src/entity/*.ts'],
         subscribers: ['packages/server/src/subscriber/*.ts'],
         migrations: ['packages/server/src/migrations/*.ts'],
       };
+
+console.log(`root config entities: ${dirs.entities}`);
 
 module.exports = {
   type: 'postgres',

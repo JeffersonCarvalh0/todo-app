@@ -17,6 +17,8 @@ const dirs =
         migrations: ['src/migrations/*.ts'],
       };
 
+console.log(`server config entities: ${dirs.entities}`);
+
 module.exports = {
   type: 'postgres',
   url: databaseURL,
