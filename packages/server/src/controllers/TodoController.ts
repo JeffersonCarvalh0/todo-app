@@ -15,8 +15,9 @@ export default class TodoController {
       ? await eres(getTodoRepository().save(todo))
       : [Error('Unauthorized user')];
 
+    const infoMessage = info ? info.message : '';
     const message = !user
-      ? info.message
+      ? infoMessage
       : isNotValid
       ? 'Error during data validation'
       : saveError
@@ -83,8 +84,9 @@ export default class TodoController {
         const authError =
           !user || (!getTodoError && todo.createdBy.id !== user.id);
         const data = !getTodoError && !authError ? todo.toJson() : {};
+        const infoMessage = info ? info.message : '';
         const message = err
-          ? info.message
+          ? infoMessage
           : getTodoError
           ? getTodoError.message
           : authError
@@ -114,7 +116,8 @@ export default class TodoController {
       { session: false },
       async (err: Error, user: User | false, info) => {
         const data = user ? user.todos.map((todo) => todo.toJson()) || [] : [];
-        const message = !user ? info.message : '';
+        const infoMessage = info ? info.message : '';
+        const message = !user ? infoMessage : '';
         const errors = !user ? Error('Unauthorized user') : [];
 
         context.response.status = user ? 200 : 401;
@@ -182,8 +185,9 @@ export default class TodoController {
           ? [Error('Unauthorized user')]
           : await eres(getTodoRepository().remove(todo));
 
+        const infoMessage = info ? info.message : '';
         const message = err
-          ? info.message
+          ? infoMessage
           : authError
           ? 'Unauthorized user'
           : getTodoError

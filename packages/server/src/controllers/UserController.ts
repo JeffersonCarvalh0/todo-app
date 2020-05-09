@@ -16,8 +16,9 @@ export default class UserController {
       ? await eres(getUserRepository().save(user))
       : [Error('Unauthorized user')];
 
+    const infoMessage = info ? info.message : '';
     const message = !user
-      ? info.message
+      ? infoMessage
       : isNotValid
       ? 'Error during data validation'
       : saveError
@@ -76,7 +77,7 @@ export default class UserController {
         context.response.status = err || !user ? 401 : 200;
         context.body = {
           data: token ? { token } : {},
-          message: info.message,
+          message: info ? info.message : '',
           errors: err ? [err] : [],
         };
       },
@@ -161,8 +162,9 @@ export default class UserController {
           ? await eres(getUserRepository().save(user as User))
           : [requestBodyError];
 
+        const infoMessage = info ? info.message : '';
         const message = err
-          ? info.message
+          ? infoMessage
           : requestError
           ? requestBodyError.message
           : newPasswordMismatch
@@ -207,8 +209,9 @@ export default class UserController {
           ? await eres(getUserRepository().remove(user))
           : [Error('Unauthorized user')];
 
+        const infoMessage = info ? info.message : '';
         const message = err
-          ? info.message
+          ? infoMessage
           : deleteError
           ? deleteError.message
           : '';
