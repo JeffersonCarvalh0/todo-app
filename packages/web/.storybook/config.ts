@@ -1,4 +1,5 @@
-import { configure } from "@storybook/react";
+import { configure, addDecorator } from "@storybook/react";
+import themeDecorator from './themeDecorator';
 
 const req = require.context("../src", true, /\.story\.tsx$/);
 function loadStories() {
@@ -6,3 +7,4 @@ function loadStories() {
 }
 
 configure(loadStories, module);
+addDecorator(themeDecorator);
