@@ -2,45 +2,29 @@ import React from 'react';
 import styled from 'styled-components';
 
 import GlobalStyle from './globalStyle';
+import Theme from './Theme';
+import Login from './pages/Login';
 
 const Container = styled.div`
-  text-align: center;
-`;
-
-const Header = styled.header`
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: ${(props) => props.theme.colors.background};
   display: flex;
   flex-direction: column;
+  align-content: center;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-`;
-
-const AppLink = styled.a`
-  color: #61dafb;
+  width: 100vw;
+  height: 100vh;
 `;
 
 function App() {
   return (
     <>
       <GlobalStyle />
-      <Container>
-        <Header>
-          <p>Automatically deployed with github actions!!!</p>
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <AppLink
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </AppLink>
-        </Header>
-      </Container>
+      <Theme>
+        <Container>
+          <Login />
+        </Container>
+      </Theme>
     </>
   );
 }
