@@ -6,7 +6,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     font-family: Roboto;
     font-size: calc(1em + 1vw);
-    color: #fff;
+    color: ##032B43;
   }
   button {
     font-family: Roboto;

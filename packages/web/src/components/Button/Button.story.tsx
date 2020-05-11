@@ -3,10 +3,12 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, text } from '@storybook/addon-knobs';
 
-import TextInput from './TextInput';
+import Button from './Button';
 
-storiesOf('TextInput', module)
+storiesOf('Button', module)
   .addDecorator(withKnobs)
-  .add('TextInput', () => (
-    <TextInput label={text('Label', 'Label')} setValue={action('type')} />
+  .add('Button', () => (
+    <Button onClick={action('clicked')}>
+      {text('Button Label', 'Button Label')}
+    </Button>
   ));
