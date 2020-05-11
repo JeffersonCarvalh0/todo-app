@@ -18,7 +18,7 @@ server API docs online.
  - Typescript
  - Koa
  - Typeorm
- - Mysql
+ - PostgreSQL
  - Jest
 
 The monorepo is managed with Yarn Workspaces.
