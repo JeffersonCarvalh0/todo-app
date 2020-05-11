@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Field } from 'formik';
 
 const Wrapper = styled.div`
   display: flex;
@@ -7,7 +8,7 @@ const Wrapper = styled.div`
   align-items: flex-start;
 `;
 
-const StyledInput = styled.input`
+const Input = styled(Field)`
   background-color: ${(props) => props.theme.colors.lightAccent};
   border: none;
   padding: 20px;
@@ -29,21 +30,17 @@ const Label = styled.h4`
 `;
 
 interface Props {
-  label?: string;
+  label: string;
   obscure?: boolean;
-  setValue: Function;
 }
 
-const TextInput = ({ label, setValue, obscure = false }: Props) => {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setValue(event.target.value);
-
+const TextInput = ({ label, obscure = false }: Props) => {
   return (
     <Wrapper>
       {label && label !== '' ? <Label>{label}</Label> : <></>}
-      <StyledInput
+      <Input
+        name={label}
         data-testid="TextInput"
-        onChange={handleChange}
         type={obscure ? 'password' : 'text'}
       />
     </Wrapper>

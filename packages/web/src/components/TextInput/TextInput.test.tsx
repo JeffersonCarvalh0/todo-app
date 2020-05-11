@@ -1,23 +1,19 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { Formik } from 'formik';
 
 import TextInput from './TextInput';
 import Theme from '../../Theme';
 
-test('Renders the input and set values correctly', () => {
-  const handleChange = jest.fn();
-
+test('Renders the input', () => {
   const { getByTestId } = render(
     <Theme>
-      <TextInput setValue={handleChange} />
+      <Formik initialValues={{ Label: '' }} onSubmit={() => {}}>
+        <TextInput label="Input" />
+      </Formik>
     </Theme>,
   );
 
   const element = getByTestId('TextInput') as HTMLInputElement;
   expect(element).toBeInTheDocument();
-
-  userEvent.type(element, 'test');
-  expect(handleChange).toHaveBeenCalled();
-  expect(element.value).toBe('test');
 });
