@@ -10,9 +10,8 @@ const Wrapper = styled.div`
 const StyledInput = styled.input`
   background-color: ${(props) => props.theme.colors.lightAccent};
   border: none;
-  padding: 1vw 1vh;
+  padding: 20px;
   text-align: center;
-  height: 5%;
   transition: border-color 250ms ease;
   border: 2px solid;
   border-radius: 50px;
@@ -31,17 +30,22 @@ const Label = styled.h4`
 
 interface Props {
   label?: string;
+  obscure?: boolean;
   setValue: Function;
 }
 
-const TextInput = ({ label, setValue }: Props) => {
+const TextInput = ({ label, setValue, obscure = false }: Props) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setValue(event.target.value);
 
   return (
     <Wrapper>
       {label && label !== '' ? <Label>{label}</Label> : <></>}
-      <StyledInput data-testid="TextInput" onChange={handleChange} />
+      <StyledInput
+        data-testid="TextInput"
+        onChange={handleChange}
+        type={obscure ? 'password' : 'text'}
+      />
     </Wrapper>
   );
 };

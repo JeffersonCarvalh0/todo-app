@@ -6,16 +6,17 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     font-family: Roboto;
     font-size: calc(1em + 1vw);
-    color: ##032B43;
+    color: #fff;
   }
   button {
     font-family: Roboto;
     font-size: inherit;
+    color: #032B43;
   }
   input {
     font-family: Roboto;
     font-size: inherit;
-    color: #02020A;
+    color: #032B43;
   }
 `;
 
