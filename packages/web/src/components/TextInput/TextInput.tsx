@@ -31,13 +31,19 @@ const Label = styled.h4`
 
 interface Props {
   label?: string;
+  setValue: Function;
 }
 
-const TextInput = ({ label }: Props) => (
-  <Wrapper>
-    {label && label !== '' ? <Label>{label}</Label> : <></>}
-    <StyledInput />
-  </Wrapper>
-);
+const TextInput = ({ label, setValue }: Props) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setValue(event.target.value);
+
+  return (
+    <Wrapper>
+      {label && label !== '' ? <Label>{label}</Label> : <></>}
+      <StyledInput data-testid="TextInput" onChange={handleChange} />
+    </Wrapper>
+  );
+};
 
 export default TextInput;
