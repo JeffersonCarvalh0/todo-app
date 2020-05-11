@@ -24,12 +24,18 @@ const StyledButton = styled.button`
 
 interface Props {
   onClick?: (event: React.MouseEvent) => void;
+  type?: 'button' | 'submit' | 'reset' | undefined;
   children: React.ReactNode;
 }
 
-const Button = ({ onClick, children, marginTop }: Props & StyledProps) => {
+const Button = ({
+  onClick,
+  type,
+  children,
+  marginTop,
+}: Props & StyledProps) => {
   return (
-    <StyledButton onClick={onClick} marginTop={marginTop}>
+    <StyledButton type={type} onClick={onClick} marginTop={marginTop}>
       {children}
     </StyledButton>
   );
