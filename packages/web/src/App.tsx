@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import GlobalStyle from './globalStyle';
 import Theme from './Theme';
 import Login from './pages/Login';
+import SignUp from './pages/SignUp';
+import { Switch, Route } from 'react-router-dom';
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.background};
@@ -12,21 +14,29 @@ const Container = styled.div`
   align-content: center;
   align-items: center;
   justify-content: center;
-  width: 100vw;
-  height: 100vh;
+  width: inherit;
+  height: inherit;
 `;
 
-function App() {
+const App = () => {
   return (
     <>
       <GlobalStyle />
       <Theme>
         <Container>
-          <Login />
+          <Switch>
+            <Route path="/signup">
+              <SignUp />
+            </Route>
+
+            <Route path="/">
+              <Login />
+            </Route>
+          </Switch>
         </Container>
       </Theme>
     </>
   );
-}
+};
 
 export default App;

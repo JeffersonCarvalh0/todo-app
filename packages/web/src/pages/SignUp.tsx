@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { Redirect, Link } from 'react-router-dom';
 
 import TextInput from '../components/TextInput';
 import ErrorMessage from '../components/ErrorMessage';
@@ -20,38 +19,36 @@ const ApiErrorMessage = styled.h3`
   text-align: center;
 `;
 
-const Login = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+const SignUp = () => {
+  const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  return loggedIn ? (
-    <Redirect to="/dashboard" />
-  ) : (
+  return (
     <Formik
-      initialValues={{ Email: '', Password: '' }}
+      initialValues={{ Name: '', Email: '', Password: '', ConfirmPassword: '' }}
       validationSchema={Yup.object({
+        Name: Yup.string().required(),
         Email: Yup.string().required().email(),
         Password: Yup.string().required(),
+        ConfirmPassword: Yup.string().oneOf(
+          [Yup.ref('Password'), null],
+          "Passwords don't match",
+        ),
       })}
       onSubmit={(values, { setSubmitting }) => {
         server
-          .post('/login', {
+          .post('/user', {
+            name: values.Name,
             email: values.Email,
             password: values.Password,
           })
           .then((response) => {
-            if (response) {
-              if (response.data.data.token) {
-                server.defaults.headers.common = {
-                  Authorization: `Bearer ${response.data.data.token}`,
-                };
-                setLoggedIn(true);
-              }
-            }
+            if (response.status === 201) setSuccess(true);
           })
           .catch((error) => {
             if (error) {
-              setErrorMessage(error.response.data.message);
+              console.log(error.response.data.message);
+              setErrorMessage(error.response.data.messsage);
             }
           })
           .then(() => {
@@ -68,17 +65,22 @@ const Login = () => {
             ) : (
               <></>
             )}
+            <TextInput name="Name" />
+            <ErrorMessage name="Name" />
             <TextInput name="Email" />
             <ErrorMessage name="Email" />
             <TextInput name="Password" obscure />
             <ErrorMessage name="Password" />
+            <TextInput
+              name="ConfirmPassword"
+              label="Confirm Password"
+              obscure
+            />
+            <ErrorMessage name="ConfirmPassword" />
 
-            <Button type="submit" marginTop="20px">
-              Login
+            <Button type="submit" marginTop="60px">
+              Sign Up
             </Button>
-            <Link to="/signup">
-              <Button marginTop="10px"> Create a new account </Button>
-            </Link>
           </Container>
         </Form>
       )}
@@ -86,4 +88,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

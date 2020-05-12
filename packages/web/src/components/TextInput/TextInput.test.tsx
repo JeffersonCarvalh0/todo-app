@@ -9,7 +9,7 @@ test('Renders the input', () => {
   const { getByTestId } = render(
     <Theme>
       <Formik initialValues={{ Label: '' }} onSubmit={() => {}}>
-        <TextInput label="Input" />
+        <TextInput name="Input" />
       </Formik>
     </Theme>,
   );

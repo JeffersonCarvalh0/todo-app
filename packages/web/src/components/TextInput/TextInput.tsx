@@ -30,16 +30,17 @@ const Label = styled.h4`
 `;
 
 interface Props {
-  label: string;
+  name: string;
+  label?: string;
   obscure?: boolean;
 }
 
-const TextInput = ({ label, obscure = false }: Props) => {
+const TextInput = ({ name, label, obscure = false }: Props) => {
   return (
     <Wrapper>
-      {label && label !== '' ? <Label>{label}</Label> : <></>}
+      <Label>{label || name}</Label>
       <Input
-        name={label}
+        name={name}
         data-testid="TextInput"
         type={obscure ? 'password' : 'text'}
       />
