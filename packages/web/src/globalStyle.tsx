@@ -24,7 +24,7 @@ const GlobalStyle = createGlobalStyle`
     color: #032B43;
   }
 
-  input {
+  input, textarea {
     font-family: Roboto;
     font-size: inherit;
     color: #032B43;
