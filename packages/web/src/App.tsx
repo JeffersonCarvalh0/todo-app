@@ -11,13 +11,14 @@ import Button from './components/Button';
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.background};
+  padding: 40px;
   display: flex;
   flex-direction: column;
   align-content: center;
   align-items: center;
   justify-content: center;
-  width: inherit;
-  height: inherit;
+  width: 100vw;
+  min-height: 100vh;
 `;
 
 const App = () => {

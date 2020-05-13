@@ -8,7 +8,9 @@ import Button from './Button';
 storiesOf('Button', module)
   .addDecorator(withKnobs)
   .add('Button', () => (
-    <Button onClick={action('clicked')}>
-      {text('Button Label', 'Button Label')}
-    </Button>
+    <div>
+      <Button onClick={action('clicked')}>
+        {text('Button Label', 'Button Label')}
+      </Button>
+    </div>
   ));
