@@ -3,6 +3,7 @@ import logger from 'koa-logger';
 import json from 'koa-json';
 import bodyParser from 'koa-bodyparser';
 import helmet from 'koa-helmet';
+import cors from '@koa/cors';
 
 import { createConnection } from 'typeorm';
 
@@ -17,6 +18,7 @@ const start = async (port?: string | number) => {
   app.use(json());
   app.use(logger());
   app.use(bodyParser());
+  app.use(cors());
 
   /** Database connection */
   await createConnection()

@@ -1,48 +1,43 @@
 import React from 'react';
 import styled from 'styled-components';
+import Cookies from 'universal-cookie';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import GlobalStyle from './globalStyle';
+import Theme from './Theme';
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 
 const Container = styled.div`
-  text-align: center;
-`;
-
-const Header = styled.header`
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: ${(props) => props.theme.colors.background};
   display: flex;
   flex-direction: column;
+  align-content: center;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  width: inherit;
+  height: inherit;
 `;
 
-const AppLink = styled.a`
-  color: #61dafb;
-`;
-
-function App() {
+const App = () => {
+  const isTokenSet = new Cookies().get('token');
   return (
     <>
+      {isTokenSet ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
       <GlobalStyle />
-      <Container>
-        <Header>
-          <p>Automatically deployed with github actions!!!</p>
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <AppLink
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </AppLink>
-        </Header>
-      </Container>
+      <Theme>
+        <Container>
+          <Switch>
+            <Route path="/signup" component={SignUp} />
+            <Route path="/login" component={Login} />
+            <Route path="/dashboard">
+              <div> Dashboard </div>
+            </Route>
+          </Switch>
+        </Container>
+      </Theme>
     </>
   );
-}
+};
 
 export default App;
