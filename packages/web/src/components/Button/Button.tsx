@@ -12,6 +12,7 @@ const StyledButton = styled.button`
   padding: 10px 20px;
   transition: opacity 250ms ease;
   margin-top: ${(props: StyledProps) => props.marginTop || '0px'};
+  flex: 1;
 
   &:focus {
     outline: none;

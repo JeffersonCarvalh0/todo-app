@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { Redirect, Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 
 import TextInput from '../components/TextInput';
 import ErrorMessage from '../components/ErrorMessage';
@@ -20,9 +21,26 @@ const ApiErrorMessage = styled.h3`
   text-align: center;
 `;
 
-const Login = () => {
+const AccountCreatedMessage = styled.h3`
+  text-align: center;
+`;
+
+const LinkButton = styled(Link)`
+  display: flex;
+  text-decoration: none;
+`;
+
+interface Props {
+  location?: {
+    state: {
+      accountCreated: boolean;
+    };
+  };
+}
+
+const Login = (props: Props) => {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  console.log(props.location);
 
   return loggedIn ? (
     <Redirect to="/dashboard" />
@@ -33,29 +51,22 @@ const Login = () => {
         Email: Yup.string().required().email(),
         Password: Yup.string().required(),
       })}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={async (values, { setStatus }) => {
         server
           .post('/login', {
             email: values.Email,
             password: values.Password,
           })
           .then((response) => {
-            if (response) {
-              if (response.data.data.token) {
-                server.defaults.headers.common = {
-                  Authorization: `Bearer ${response.data.data.token}`,
-                };
-                setLoggedIn(true);
-              }
-            }
+            const token = response.data.data.token;
+            server.defaults.headers.common = {
+              Authorization: `Bearer ${token}`,
+            };
+            new Cookies().set('token', token);
+            setLoggedIn(true);
           })
           .catch((error) => {
-            if (error) {
-              setErrorMessage(error.response.data.message);
-            }
-          })
-          .then(() => {
-            setSubmitting(false);
+            setStatus(error.response.data.message);
           });
       }}
     >
@@ -63,10 +74,13 @@ const Login = () => {
         <Form>
           <FullLoading show={formik.isSubmitting} />
           <Container>
-            {errorMessage ? (
-              <ApiErrorMessage>{errorMessage}</ApiErrorMessage>
-            ) : (
-              <></>
+            {formik.status && (
+              <ApiErrorMessage>{formik.status}</ApiErrorMessage>
+            )}
+            {props.location && props.location.state.accountCreated && (
+              <AccountCreatedMessage>
+                Account successfully created!
+              </AccountCreatedMessage>
             )}
             <TextInput name="Email" />
             <ErrorMessage name="Email" />
@@ -76,9 +90,9 @@ const Login = () => {
             <Button type="submit" marginTop="20px">
               Login
             </Button>
-            <Link to="/signup">
+            <LinkButton to="/signup">
               <Button marginTop="10px"> Create a new account </Button>
-            </Link>
+            </LinkButton>
           </Container>
         </Form>
       )}

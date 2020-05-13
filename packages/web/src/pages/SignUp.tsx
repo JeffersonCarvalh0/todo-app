@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import { Redirect } from 'react-router-dom';
 
 import TextInput from '../components/TextInput';
 import ErrorMessage from '../components/ErrorMessage';
@@ -21,11 +22,17 @@ const ApiErrorMessage = styled.h3`
 
 const SignUp = () => {
   const [success, setSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
-  return (
+  return success ? (
+    <Redirect to={{ pathname: '/login', state: { accountCreated: true } }} />
+  ) : (
     <Formik
-      initialValues={{ Name: '', Email: '', Password: '', ConfirmPassword: '' }}
+      initialValues={{
+        Name: '',
+        Email: '',
+        Password: '',
+        ConfirmPassword: '',
+      }}
       validationSchema={Yup.object({
         Name: Yup.string().required(),
         Email: Yup.string().required().email(),
@@ -35,7 +42,7 @@ const SignUp = () => {
           "Passwords don't match",
         ),
       })}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={async (values, { setStatus }) => {
         server
           .post('/user', {
             name: values.Name,
@@ -46,13 +53,7 @@ const SignUp = () => {
             if (response.status === 201) setSuccess(true);
           })
           .catch((error) => {
-            if (error) {
-              console.log(error.response.data.message);
-              setErrorMessage(error.response.data.messsage);
-            }
-          })
-          .then(() => {
-            setSubmitting(false);
+            setStatus(error.response.data.message);
           });
       }}
     >
@@ -60,10 +61,8 @@ const SignUp = () => {
         <Form>
           <FullLoading show={formik.isSubmitting} />
           <Container>
-            {errorMessage ? (
-              <ApiErrorMessage>{errorMessage}</ApiErrorMessage>
-            ) : (
-              <></>
+            {formik.status && (
+              <ApiErrorMessage>{formik.status}</ApiErrorMessage>
             )}
             <TextInput name="Name" />
             <ErrorMessage name="Name" />
