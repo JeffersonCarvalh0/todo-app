@@ -53,7 +53,9 @@ const SignUp = () => {
             if (response.status === 201) setSuccess(true);
           })
           .catch((error) => {
-            setStatus(error.response.data.message);
+            if (error.response) {
+              setStatus(error.response.data.message);
+            }
           });
       }}
     >

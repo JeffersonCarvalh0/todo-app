@@ -7,6 +7,7 @@ import GlobalStyle from './globalStyle';
 import Theme from './Theme';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import Button from './components/Button';
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.background};
@@ -20,7 +21,8 @@ const Container = styled.div`
 `;
 
 const App = () => {
-  const isTokenSet = new Cookies().get('token');
+  const cookies = new Cookies();
+  const isTokenSet = cookies.get('token');
   return (
     <>
       {isTokenSet ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
@@ -31,7 +33,16 @@ const App = () => {
             <Route path="/signup" component={SignUp} />
             <Route path="/login" component={Login} />
             <Route path="/dashboard">
-              <div> Dashboard </div>
+              <div>
+                <Button
+                  onClick={() => {
+                    cookies.set('token', '');
+                    window.location.reload();
+                  }}
+                >
+                  Logoff
+                </Button>
+              </div>
             </Route>
           </Switch>
         </Container>
