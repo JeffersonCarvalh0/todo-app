@@ -58,9 +58,6 @@ const Login = (props: Props) => {
           })
           .then((response) => {
             const token = response.data.data.token;
-            server.defaults.headers.common = {
-              Authorization: `Bearer ${token}`,
-            };
             new Cookies().set('token', token);
             setLoggedIn(true);
           })

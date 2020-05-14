@@ -50,7 +50,7 @@ const SignUp = () => {
             password: values.Password,
           })
           .then((response) => {
-            if (response.status === 201) setSuccess(true);
+            if (response && response.status === 201) setSuccess(true);
           })
           .catch((error) => {
             if (error.response) {
