@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { MdEdit, MdCancel } from 'react-icons/md';
+import styled, { css } from 'styled-components';
+import {
+  MdEdit,
+  MdCancel,
+  MdSave,
+  MdDone,
+  MdDelete,
+  MdSettingsBackupRestore,
+} from 'react-icons/md';
+import { Formik, Field } from 'formik';
+import * as Yup from 'yup';
+import ReactLoading from 'react-loading';
+
+import server from '../../api';
 
 const Background = styled.div`
   display: flex;
@@ -20,13 +32,27 @@ const Title = styled.h4`
   margin: 0;
 `;
 
-const EditableTitle = styled.input`
+const Description = styled.p`
+  margin: 0;
+`;
+
+const Caption = styled.p`
+  margin: 0;
+  margin-right: 5px;
+  font-size: small;
+`;
+
+const EditableTitle = styled(Field)<{ isErrored: boolean }>`
   margin: 0;
   background-color: ${(props) => props.theme.colors.lightAccent};
   font-weight: bold;
   transition: border-color 250ms ease;
   border: none;
   border-bottom: 2px solid;
+  border-color: ${(props) =>
+    props.isErrored
+      ? props.theme.colors.red
+      : props.theme.colors.backgroundColor};
 
   &:focus {
     outline: none;
@@ -34,84 +60,179 @@ const EditableTitle = styled.input`
   }
 `;
 
-const Description = styled.p`
-  margin: 0;
+const EditableDescription = styled(EditableTitle)`
+  resize: none;
+  font-weight: normal;
 `;
 
-const EditableDescription = styled.textarea`
-  margin: 0;
-  background-color: ${(props) => props.theme.colors.lightAccent};
-  transition: border-color 250ms ease;
-  border: none;
-  border-bottom: 2px solid;
-  resize: none;
+const TopIconsRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+`;
 
-  &:focus {
-    outline: none;
-    border-color: ${(props) => props.theme.colors.accent};
+const BottomRow = styled(TopIconsRow)`
+  justify-content: space-between;
+  margin-top: 30px;
+`;
+
+const IconBase = css`
+  &:active {
+    transform: translate(2px, 2px);
   }
 `;
 
 const EditIcon = styled(MdEdit)`
-  align-self: flex-end;
+  ${IconBase}
+`;
+
+const CancelIcon = styled(MdCancel)`
+  ${IconBase}
+  margin-left: 10px;
+`;
+
+const SaveIcon = styled(MdSave)`
+  ${IconBase}
+`;
+
+const DeleteIcon = styled(MdDelete)`
+  ${IconBase}
+  color: ${(props) => props.theme.colors.error};
+`;
+
+const IconButton = styled.button`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+  background-color: inherit;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
+
+  &:focus {
+    outline: none;
+  }
 
   &:active {
     transform: translate(2px, 2px);
   }
 `;
 
-const CancelIcon = styled(MdCancel)`
-  align-self: flex-end;
+const Overlay = styled.div`
+  position: relative;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 2;
+`;
 
-  &:active {
-    transform: translate(2px, 2px);
-  }
+const StyledLoading = styled(ReactLoading)`
+  display: block;
+  margin: auto;
+  text-align: center;
+  width: 10vw;
+  height: 10vh;
 `;
 
 interface Props {
   title: string;
   description: string;
+  id?: number;
+  done: boolean;
 }
 
-const TodoCard = ({ title, description }: Props) => {
+const TodoCard = ({ title, description, id, done }: Props) => {
   const [editMode, setEditMode] = useState(false);
-  const [formState, setFormState] = useState({
-    title: title,
-    description: description,
-  });
-
   const toggleEditMode = () => setEditMode((prevEditMode) => !prevEditMode);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormState((prevFormState: Props) => ({
-      ...prevFormState,
-      [event.target.name]: event.target.value,
-    }));
-  };
 
   return (
     <Background>
-      {editMode ? (
-        <>
-          <CancelIcon onClick={toggleEditMode} />
-          <EditableTitle
-            name="title"
-            value={formState.title}
-            onChange={handleChange}
-          />
-          <EditableDescription
-            name="description"
-            value={formState.description}
-            onChange={handleChange}
-          />
-        </>
-      ) : (
-        <>
-          <EditIcon onClick={toggleEditMode} />
-          <Title>{formState.title}</Title>
-          <Description>{formState.description}</Description>
-        </>
-      )}
+      <Formik
+        initialValues={{
+          Title: title,
+          Description: description,
+        }}
+        validationSchema={Yup.object({
+          Title: Yup.string().required(),
+          Description: Yup.string().required(),
+        })}
+        onSubmit={async (values, { setStatus }) => {
+          const body = {
+            title: values.Title,
+            description: values.Description,
+          };
+
+          (id ? server.put(`/todo/${id}`, body) : server.post('/todo', body))
+            .then((response) => {
+              if (response.status === 200) {
+                // Update the local todo data
+              }
+            })
+            .catch((error) => {
+              if (error.response) {
+                setStatus(error.response.data.message);
+              }
+            });
+        }}
+      >
+        {(formik) =>
+          formik.isSubmitting ? (
+            <Overlay>
+              <StyledLoading type="bubbles" />
+            </Overlay>
+          ) : editMode ? (
+            <>
+              <TopIconsRow>
+                <SaveIcon onClick={() => formik.handleSubmit()} />
+                <CancelIcon
+                  onClick={() => {
+                    formik.handleReset();
+                    toggleEditMode();
+                  }}
+                />
+              </TopIconsRow>
+              <EditableTitle
+                name="Title"
+                isErrored={formik.errors.Title}
+                placeholder="Title"
+              />
+              <EditableDescription
+                name="Description"
+                component="textarea"
+                isErrored={formik.errors.Description}
+                placeholder="Description"
+              />
+              <BottomRow>
+                <IconButton>
+                  <Caption> Delete Todo </Caption>
+                  <DeleteIcon />
+                </IconButton>
+                <IconButton>
+                  <Caption>{done ? 'Mark as undone' : 'Mark as done'}</Caption>
+                  {done ? <MdSettingsBackupRestore /> : <MdDone />}
+                </IconButton>
+              </BottomRow>
+            </>
+          ) : (
+            <>
+              <TopIconsRow>
+                <EditIcon onClick={toggleEditMode} />
+              </TopIconsRow>
+              <Title>{formik.values.Title}</Title>
+              <Description>{formik.values.Description}</Description>
+            </>
+          )
+        }
+      </Formik>
     </Background>
   );
 };
