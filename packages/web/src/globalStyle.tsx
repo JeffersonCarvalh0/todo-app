@@ -1,21 +1,18 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-  html, #root, .app {
-    position: absolute;
-    top: 0;
-    left: 0;
-    min-height: 100vh;
-    height: 100vh;
-    width: 100vw;
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    min-height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow: auto;
   }
 
   body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    min-height: 100vh;
-    width: 100%;
     font-family: Roboto;
     font-size: calc(1em + 1vw);
     color: #fff;
@@ -27,7 +24,7 @@ const GlobalStyle = createGlobalStyle`
     color: #032B43;
   }
 
-  input {
+  input, textarea {
     font-family: Roboto;
     font-size: inherit;
     color: #032B43;

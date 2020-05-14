@@ -10,7 +10,6 @@ const Wrapper = styled.div`
 
 const Input = styled(Field)`
   background-color: ${(props) => props.theme.colors.lightAccent};
-  border: none;
   padding: 20px;
   text-align: center;
   transition: border-color 250ms ease;

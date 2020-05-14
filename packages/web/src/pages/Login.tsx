@@ -40,7 +40,6 @@ interface Props {
 
 const Login = (props: Props) => {
   const [loggedIn, setLoggedIn] = useState(false);
-  console.log(props.location);
 
   return loggedIn ? (
     <Redirect to="/dashboard" />
@@ -66,7 +65,9 @@ const Login = (props: Props) => {
             setLoggedIn(true);
           })
           .catch((error) => {
-            setStatus(error.response.data.message);
+            if (error.response) {
+              setStatus(error.response.data.message);
+            }
           });
       }}
     >
@@ -77,11 +78,13 @@ const Login = (props: Props) => {
             {formik.status && (
               <ApiErrorMessage>{formik.status}</ApiErrorMessage>
             )}
-            {props.location && props.location.state.accountCreated && (
-              <AccountCreatedMessage>
-                Account successfully created!
-              </AccountCreatedMessage>
-            )}
+            {props.location &&
+              props.location.state &&
+              props.location.state.accountCreated && (
+                <AccountCreatedMessage>
+                  Account successfully created!
+                </AccountCreatedMessage>
+              )}
             <TextInput name="Email" />
             <ErrorMessage name="Email" />
             <TextInput name="Password" obscure />
