@@ -136,8 +136,6 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
   const [currentTodo, setCurrentTodo] = useState(todo);
   const [editMode, setEditMode] = useState(currentTodo.id ? false : true);
 
-  const toggleEditMode = () => setEditMode((prevEditMode) => !prevEditMode);
-
   const deleteTodo = async () => {
     server.delete(`/todo/${currentTodo.id}`).then((response) => {
       if (response.status === 200) {
@@ -173,7 +171,7 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
             description: values.Description,
           };
 
-          (currentTodo.id
+          return (currentTodo.id
             ? server.put(`/todo/${currentTodo.id}`, body)
             : server.post('/todo', body)
           )
@@ -203,7 +201,7 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
                 <CancelIcon
                   onClick={() => {
                     formik.handleReset();
-                    toggleEditMode();
+                    setEditMode(false);
                     if (onEditCancel) onEditCancel();
                   }}
                 />
@@ -224,7 +222,12 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
 
               {currentTodo.id && (
                 <BottomRow>
-                  <IconButton onClick={deleteTodo}>
+                  <IconButton
+                    onClick={async () => {
+                      await deleteTodo();
+                      if (onSave) onSave();
+                    }}
+                  >
                     <Caption> Delete Todo </Caption>
                     <DeleteIcon />
                   </IconButton>
@@ -249,7 +252,7 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
           ) : (
             <>
               <TopIconsRow>
-                <EditIcon onClick={toggleEditMode} />
+                <EditIcon onClick={() => setEditMode(true)} />
               </TopIconsRow>
               <Title>{formik.values.Title}</Title>
               <Description>{formik.values.Description}</Description>
