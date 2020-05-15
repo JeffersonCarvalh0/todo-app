@@ -269,6 +269,7 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
                   <IconButton
                     onClick={async () => {
                       await toggleDone();
+                      if (onSave) onSave();
                     }}
                   >
                     <Caption>
