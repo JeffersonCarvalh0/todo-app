@@ -36,6 +36,18 @@ const AddIcon = styled(MdAddCircle)`
   }
 `;
 
+const Tab = styled.div<{ isActive: boolean }>`
+  border-bottom: 1px solid
+    ${(props) => (props.isActive ? props.theme.colors.accent : 'none')};
+  margin: 10px;
+`;
+
+const TabsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState({ name: '', email: '' });
@@ -45,6 +57,7 @@ const Dashboard = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [refreshTodos, setRefreshTodos] = useState(true);
   const [newTodoBeingAdded, setNewTodoBeingAdded] = useState(false);
+  const [showDoneTodos, setShowDoneTodos] = useState(false);
   const cookies = new Cookies();
 
   const toggleRefresh = () => {
@@ -113,8 +126,22 @@ const Dashboard = () => {
       >
         Logoff
       </Button>
+
       <h1>Greetings, {userData.name}</h1>
+
       <TodosContainer>
+        <TabsContainer>
+          <Tab
+            isActive={!showDoneTodos}
+            onClick={() => setShowDoneTodos(false)}
+          >
+            To do
+          </Tab>
+          <Tab isActive={showDoneTodos} onClick={() => setShowDoneTodos(true)}>
+            Done
+          </Tab>
+        </TabsContainer>
+
         {newTodoBeingAdded ? (
           <TodoCard
             todo={{ title: '', description: '', done: false }}
@@ -125,22 +152,28 @@ const Dashboard = () => {
             }}
           />
         ) : (
-          <AddIcon onClick={() => setNewTodoBeingAdded(true)} />
+          !showDoneTodos && (
+            <AddIcon onClick={() => setNewTodoBeingAdded(true)} />
+          )
         )}
+
         {todos.length === 0 ? (
           <h4>No Todos were found</h4>
         ) : (
-          todos.map((todo) => (
-            <TodoCard
-              key={todo.id}
-              todo={{
-                title: todo.title,
-                description: todo.description,
-                done: todo.done,
-                id: todo.id,
-              }}
-            />
-          ))
+          todos
+            .filter((todo) => (showDoneTodos ? todo.done : !todo.done))
+            .map((todo) => (
+              <TodoCard
+                key={todo.id}
+                onSave={toggleRefresh}
+                todo={{
+                  title: todo.title,
+                  description: todo.description,
+                  done: todo.done,
+                  id: todo.id,
+                }}
+              />
+            ))
         )}
       </TodosContainer>
     </Container>

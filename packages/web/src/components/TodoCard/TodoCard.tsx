@@ -246,17 +246,20 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
                   }}
                 />
               </TopIconsRow>
+
               <EditableTitle
                 name="Title"
                 isErrored={formik.errors.Title}
                 placeholder="Title"
               />
+
               <EditableDescription
                 name="Description"
                 component="textarea"
                 isErrored={formik.errors.Description}
                 placeholder="Description"
               />
+
               {currentTodo.id && (
                 <BottomRow>
                   <IconButton onClick={deleteTodo}>
