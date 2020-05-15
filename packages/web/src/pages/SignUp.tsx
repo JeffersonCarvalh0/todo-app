@@ -43,7 +43,7 @@ const SignUp = () => {
         ),
       })}
       onSubmit={async (values, { setStatus }) => {
-        server
+        return server
           .post('/user', {
             name: values.Name,
             email: values.Email,
