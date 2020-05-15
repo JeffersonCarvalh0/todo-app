@@ -58,7 +58,7 @@ const Login = (props: Props) => {
         Password: Yup.string().required(),
       })}
       onSubmit={async (values, { setStatus }) => {
-        server
+        return server
           .post('/login', {
             email: values.Email,
             password: values.Password,

@@ -10,7 +10,6 @@ import {
 } from 'react-icons/md';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
-import ReactLoading from 'react-loading';
 
 import server from '../../api';
 
@@ -122,29 +121,6 @@ const IconButton = styled.button`
   }
 `;
 
-const Overlay = styled.div`
-  position: relative;
-  top: -20px;
-  left: -20px;
-  width: calc(100% + 40px);
-  height: calc(100% + 40px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
-  border-radius: 8px;
-  background-color: rgba(0, 0, 0, 0.4);
-  z-index: 2;
-`;
-
-const StyledLoading = styled(ReactLoading)`
-  display: block;
-  margin: auto;
-  text-align: center;
-  width: 10vw;
-  height: 10vh;
-`;
-
 interface Props {
   todo: {
     title: string;
@@ -159,32 +135,25 @@ interface Props {
 const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
   const [currentTodo, setCurrentTodo] = useState(todo);
   const [editMode, setEditMode] = useState(currentTodo.id ? false : true);
-  const [isLoading, setLoading] = useState(false);
 
   const toggleEditMode = () => setEditMode((prevEditMode) => !prevEditMode);
 
   const deleteTodo = async () => {
-    setLoading(true);
-    server
-      .delete(`/todo/${currentTodo.id}`)
-      .then((response) => {
-        if (response.status === 200) {
-          setCurrentTodo(response.data.data);
-        }
-      })
-      .finally(() => setLoading(false));
+    server.delete(`/todo/${currentTodo.id}`).then((response) => {
+      if (response.status === 200) {
+        setCurrentTodo(response.data.data);
+      }
+    });
   };
 
   const toggleDone = async () => {
-    setLoading(true);
     server
       .put(`todo/${currentTodo.id}`, { done: !currentTodo.done })
       .then((response) => {
         if (response.status === 200) {
           setCurrentTodo(response.data.data);
         }
-      })
-      .finally(() => setLoading(false));
+      });
   };
 
   return (
@@ -199,8 +168,6 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
           Description: Yup.string().required(),
         })}
         onSubmit={async (values, { setStatus }) => {
-          setLoading(true);
-
           const body = {
             title: values.Title,
             description: values.Description,
@@ -219,16 +186,11 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
               if (error.response) {
                 setStatus(error.response.data.message);
               }
-            })
-            .finally(() => setLoading(false));
+            });
         }}
       >
         {(formik) =>
-          formik.isSubmitting || isLoading ? (
-            <Overlay>
-              <StyledLoading type="bubbles" />
-            </Overlay>
-          ) : editMode ? (
+          editMode ? (
             <>
               <TopIconsRow>
                 <SaveIcon
