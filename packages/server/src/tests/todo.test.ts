@@ -5,24 +5,6 @@ import start from '../app';
 import Todo, { getTodoRepository } from '../entity/Todo';
 import { getUserRepository } from '../entity/User';
 
-interface TodoJson {
-  title: string;
-  description: string;
-  done: boolean;
-}
-
-const todoListsEquals = (todosList1: TodoJson[], todosList2: TodoJson[]) => {
-  const zippedTodos = R.zip(todosList1, todosList2);
-  return R.all(
-    (todoPair) =>
-      R.equals(
-        R.pick(['title', 'body'], todoPair[0]),
-        R.pick(['title', 'body'], todoPair[1]),
-      ),
-    zippedTodos,
-  );
-};
-
 let token = '';
 beforeAll(async () => {
   const app = await start();
@@ -110,9 +92,7 @@ describe('Todo', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
 
-    expect(
-      todoListsEquals(response.body.data, [todo, todo2, todo3]),
-    ).toBeTruthy();
+    expect(response.body.data.length).toEqual(3);
   });
 
   it('Should not get todos if unauthorized', async () => {
@@ -228,7 +208,7 @@ describe('Todo', () => {
       .set('Authorization', `Bearer ${token}`);
 
     const wasRemoved = R.none(
-      (todo: Todo) => todo.title === 'New sample title',
+      (todo: Todo) => todo.id === fetchedTodo.id,
       newTodosResponse.body.data,
     );
 
