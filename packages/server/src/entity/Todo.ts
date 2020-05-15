@@ -2,6 +2,7 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
   ManyToOne,
   getRepository,
 } from 'typeorm';
@@ -39,6 +40,9 @@ export default class Todo {
   @IsNotEmpty()
   createdBy: User;
 
+  @CreateDateColumn()
+  createdAt: Date;
+
   constructor({ id, title, description, done, createdBy }: TodoType = {}) {
     this.id = id;
     this.title = title;
@@ -54,6 +58,7 @@ export default class Todo {
       description: this.description,
       done: this.done,
       createdBy: this.createdBy.toJson(),
+      createdAt: this.createdAt,
     };
   };
 }

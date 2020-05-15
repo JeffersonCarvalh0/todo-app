@@ -115,7 +115,13 @@ export default class TodoController {
       'jwt',
       { session: false },
       async (err: Error, user: User | false, info) => {
-        const data = user ? user.todos.map((todo) => todo.toJson()) || [] : [];
+        const data = user
+          ? user.todos
+              .map((todo) => todo.toJson())
+              .sort((todoA, todoB) =>
+                todoA.createdAt < todoB.createdAt ? 1 : -1,
+              ) || []
+          : [];
         const infoMessage = info ? info.message : '';
         const message = !user ? infoMessage : '';
         const errors = !user ? Error('Unauthorized user') : [];
@@ -147,7 +153,6 @@ export default class TodoController {
         const authError =
           !user || (!getTodoError && todo.createdBy.id !== user.id);
 
-        console.log(user);
         const { data, message, errors, statusCode } =
           todo && !authError
             ? await TodoController.upsertTodo(updatedTodo as Todo, user, info)

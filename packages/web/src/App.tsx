@@ -7,7 +7,7 @@ import GlobalStyle from './globalStyle';
 import Theme from './Theme';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
-import Button from './components/Button';
+import Dashboard from './pages/Dashboard';
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.background};
@@ -33,18 +33,7 @@ const App = () => {
           <Switch>
             <Route path="/signup" component={SignUp} />
             <Route path="/login" component={Login} />
-            <Route path="/dashboard">
-              <div>
-                <Button
-                  onClick={() => {
-                    cookies.set('token', '');
-                    window.location.reload();
-                  }}
-                >
-                  Logoff
-                </Button>
-              </div>
-            </Route>
+            <Route path="/dashboard" component={Dashboard}></Route>
           </Switch>
         </Container>
       </Theme>

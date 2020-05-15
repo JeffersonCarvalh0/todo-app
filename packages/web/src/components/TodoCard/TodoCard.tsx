@@ -22,6 +22,7 @@ const Background = styled.div`
   flex-direction: column;
   justify-content: start;
   padding: 20px;
+  margin: 10px;
   min-width: 30vw;
   max-width: 80vw;
   border-radius: 10px;
@@ -123,14 +124,15 @@ const IconButton = styled.button`
 
 const Overlay = styled.div`
   position: relative;
-  top: 0;
-  left: 0;
+  top: -20px;
+  left: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-content: center;
-  width: 100vw;
-  height: 100vh;
+  border-radius: 8px;
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 2;
 `;
@@ -144,83 +146,143 @@ const StyledLoading = styled(ReactLoading)`
 `;
 
 interface Props {
-  title: string;
-  description: string;
-  id?: number;
-  done: boolean;
+  todo: {
+    title: string;
+    description: string;
+    id?: number;
+    done: boolean;
+  };
+  onEditCancel?: Function;
+  onSave?: Function;
 }
 
-const TodoCard = ({ title, description, id, done }: Props) => {
-  const [editMode, setEditMode] = useState(false);
+const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
+  const [currentTodo, setCurrentTodo] = useState(todo);
+  const [editMode, setEditMode] = useState(currentTodo.id ? false : true);
+  const [isLoading, setLoading] = useState(false);
+
   const toggleEditMode = () => setEditMode((prevEditMode) => !prevEditMode);
+
+  const deleteTodo = async () => {
+    setLoading(true);
+    server
+      .delete(`/todo/${currentTodo.id}`)
+      .then((response) => {
+        if (response.status === 200) {
+          setCurrentTodo(response.data.data);
+        }
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const toggleDone = async () => {
+    setLoading(true);
+    server
+      .put(`todo/${currentTodo.id}`, { done: !currentTodo.done })
+      .then((response) => {
+        if (response.status === 200) {
+          setCurrentTodo(response.data.data);
+        }
+      })
+      .finally(() => setLoading(false));
+  };
 
   return (
     <Background>
       <Formik
         initialValues={{
-          Title: title,
-          Description: description,
+          Title: currentTodo.title,
+          Description: currentTodo.description,
         }}
         validationSchema={Yup.object({
           Title: Yup.string().required(),
           Description: Yup.string().required(),
         })}
         onSubmit={async (values, { setStatus }) => {
+          setLoading(true);
+
           const body = {
             title: values.Title,
             description: values.Description,
           };
 
-          (id ? server.put(`/todo/${id}`, body) : server.post('/todo', body))
+          (currentTodo.id
+            ? server.put(`/todo/${currentTodo.id}`, body)
+            : server.post('/todo', body)
+          )
             .then((response) => {
               if (response.status === 200) {
-                // Update the local todo data
+                setCurrentTodo(response.data.data);
               }
             })
             .catch((error) => {
               if (error.response) {
                 setStatus(error.response.data.message);
               }
-            });
+            })
+            .finally(() => setLoading(false));
         }}
       >
         {(formik) =>
-          formik.isSubmitting ? (
+          formik.isSubmitting || isLoading ? (
             <Overlay>
               <StyledLoading type="bubbles" />
             </Overlay>
           ) : editMode ? (
             <>
               <TopIconsRow>
-                <SaveIcon onClick={() => formik.handleSubmit()} />
+                <SaveIcon
+                  onClick={() => {
+                    formik.handleSubmit();
+                    setEditMode(false);
+                    if (onSave) onSave();
+                  }}
+                />
                 <CancelIcon
                   onClick={() => {
                     formik.handleReset();
                     toggleEditMode();
+                    if (onEditCancel) onEditCancel();
                   }}
                 />
               </TopIconsRow>
+
               <EditableTitle
                 name="Title"
                 isErrored={formik.errors.Title}
                 placeholder="Title"
               />
+
               <EditableDescription
                 name="Description"
                 component="textarea"
                 isErrored={formik.errors.Description}
                 placeholder="Description"
               />
-              <BottomRow>
-                <IconButton>
-                  <Caption> Delete Todo </Caption>
-                  <DeleteIcon />
-                </IconButton>
-                <IconButton>
-                  <Caption>{done ? 'Mark as undone' : 'Mark as done'}</Caption>
-                  {done ? <MdSettingsBackupRestore /> : <MdDone />}
-                </IconButton>
-              </BottomRow>
+
+              {currentTodo.id && (
+                <BottomRow>
+                  <IconButton onClick={deleteTodo}>
+                    <Caption> Delete Todo </Caption>
+                    <DeleteIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={async () => {
+                      await toggleDone();
+                      if (onSave) onSave();
+                    }}
+                  >
+                    <Caption>
+                      {currentTodo.done ? 'Mark as undone' : 'Mark as done'}
+                    </Caption>
+                    {currentTodo.done ? (
+                      <MdSettingsBackupRestore />
+                    ) : (
+                      <MdDone />
+                    )}
+                  </IconButton>
+                </BottomRow>
+              )}
             </>
           ) : (
             <>
