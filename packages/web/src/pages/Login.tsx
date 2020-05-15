@@ -34,12 +34,19 @@ interface Props {
   location?: {
     state: {
       accountCreated: boolean;
+      fetchUserDataErrorMessage: string;
     };
   };
 }
 
 const Login = (props: Props) => {
   const [loggedIn, setLoggedIn] = useState(false);
+  const errorMessage =
+    props.location &&
+    props.location.state &&
+    props.location.state.fetchUserDataErrorMessage
+      ? props.location.state.fetchUserDataErrorMessage
+      : '';
 
   return loggedIn ? (
     <Redirect to="/dashboard" />
@@ -72,8 +79,8 @@ const Login = (props: Props) => {
         <Form>
           <FullLoading show={formik.isSubmitting} />
           <Container>
-            {formik.status && (
-              <ApiErrorMessage>{formik.status}</ApiErrorMessage>
+            {(formik.status || errorMessage) && (
+              <ApiErrorMessage>{formik.status || errorMessage}</ApiErrorMessage>
             )}
             {props.location &&
               props.location.state &&

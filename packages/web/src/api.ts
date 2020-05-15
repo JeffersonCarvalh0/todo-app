@@ -24,6 +24,7 @@ server.interceptors.response.use(
   (error) => {
     if (error.response.status === 401) {
       cookies.set('token', '');
+      window.location.reload();
     }
 
     // https://github.com/axios/axios/issues/41#issuecomment-386762576
