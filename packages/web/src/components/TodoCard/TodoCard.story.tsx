@@ -16,5 +16,6 @@ storiesOf('TodoCard', module)
         ),
         done: boolean('Done', false),
       }}
+      onSave={() => {}}
     />
   ));

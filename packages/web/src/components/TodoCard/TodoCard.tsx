@@ -128,8 +128,8 @@ interface Props {
     id?: number;
     done: boolean;
   };
+  onSave: Function;
   onEditCancel?: Function;
-  onSave?: Function;
 }
 
 const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
@@ -140,6 +140,7 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
     server.delete(`/todo/${currentTodo.id}`).then((response) => {
       if (response.status === 200) {
         setCurrentTodo(response.data.data);
+        onSave();
       }
     });
   };
@@ -150,6 +151,7 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
       .then((response) => {
         if (response.status === 200) {
           setCurrentTodo(response.data.data);
+          onSave();
         }
       });
   };
@@ -176,8 +178,9 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
             : server.post('/todo', body)
           )
             .then((response) => {
-              if (response.status === 200) {
+              if (response.status === 200 || response.status === 201) {
                 setCurrentTodo(response.data.data);
+                onSave();
               }
             })
             .catch((error) => {
@@ -195,7 +198,6 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
                   onClick={() => {
                     formik.handleSubmit();
                     setEditMode(false);
-                    if (onSave) onSave();
                   }}
                 />
                 <CancelIcon
@@ -225,7 +227,6 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
                   <IconButton
                     onClick={async () => {
                       await deleteTodo();
-                      if (onSave) onSave();
                     }}
                   >
                     <Caption> Delete Todo </Caption>
@@ -234,7 +235,6 @@ const TodoCard = ({ todo, onEditCancel, onSave }: Props) => {
                   <IconButton
                     onClick={async () => {
                       await toggleDone();
-                      if (onSave) onSave();
                     }}
                   >
                     <Caption>
